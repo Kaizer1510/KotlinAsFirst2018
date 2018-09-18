@@ -147,6 +147,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
+    fun sqr(x: Double) = x * x
     return if (a > b) when {
         a > c -> if (b + c > a) when {
             sqr(a) == sqr(b) + sqr(c) -> 1
