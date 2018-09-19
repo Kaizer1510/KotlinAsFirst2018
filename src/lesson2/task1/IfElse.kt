@@ -162,8 +162,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val medianSide = medianOf(a, b, c)
     val minSide = minOf(a, b, c)
     return if (maxSide < medianSide + minSide) when {
-        maxSide * maxSide == medianSide * medianSide + minSide * medianSide -> 1
-        maxSide * maxSide < medianSide * medianSide + minSide * medianSide -> 0
+        maxSide * maxSide == medianSide * medianSide + minSide * minSide -> 1
+        maxSide * maxSide < medianSide * medianSide + minSide * minSide -> 0
         else -> 2
     }
     else -1
