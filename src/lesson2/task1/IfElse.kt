@@ -6,7 +6,7 @@ import lesson1.task1.discriminant
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
-
+import kotlin.math.sqr
 /**
  * Пример
  *
