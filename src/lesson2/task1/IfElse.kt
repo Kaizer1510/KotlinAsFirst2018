@@ -6,7 +6,7 @@ import lesson1.task1.discriminant
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
-import lesson1.task1
+
 /**
  * Пример
  *
@@ -162,8 +162,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val medianSide = medianOf(a, b, c)
     val minSide = minOf(a, b, c)
     return if (maxSide < medianSide + minSide) when {
-        sqr(maxSide) == sqr(medianSide) + sqr(minSide) -> 1
-        sqr(maxSide) < sqr(medianSide) + sqr(minSide) -> 0
+        maxSide * maxSide == medianSide * medianSide + minSide * medianSide -> 1
+        maxSide * maxSide < medianSide * medianSide + minSide * medianSide -> 0
         else -> 2
     }
     else -1
