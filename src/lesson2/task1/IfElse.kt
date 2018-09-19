@@ -147,35 +147,26 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    fun sqr(x: Double) = x * x
-    return if (a > b) when {
-        a > c -> if (b + c > a) when {
-            sqr(a) == sqr(b) + sqr(c) -> 1
-            sqr(a) < sqr(b) + sqr(c) -> 0
-            else -> 2
-        }
-        else -1
-        else -> if (b + a > c) when {
-            sqr(c) == sqr(b) + sqr(a) -> 1
-            sqr(c) < sqr(b) + sqr(a) -> 0
-            else -> 2
-        }
-        else -1
+    fun medianOf(x: Double, y: Double, z: Double) = if (x > y) when {
+        x < z -> x
+        y > z -> y
+        else -> z
     }
     else when {
-        b > c -> if (c + a > b) when {
-            sqr(b) == sqr(c) + sqr(a) -> 1
-            sqr(b) < sqr(c) + sqr(a) -> 0
-            else -> 2
-        }
-        else -1
-        else -> if (b + a > c) when {
-            sqr(c) == sqr(b) + sqr(a) -> 1
-            sqr(c) < sqr(b) + sqr(a) -> 0
-            else -> 2
-        }
-        else -1
+        y < z -> y
+        x > z -> x
+        else -> z
     }
+
+    val maxSide = maxOf(a, b, c)
+    val medianSide = medianOf(a, b, c)
+    val minSide = minOf(a, b, c)
+    return if (maxSide < medianSide + minSide) when {
+        sqr(maxSide) == sqr(medianSide) + sqr(minSide) -> 1
+        sqr(maxSide) < sqr(medianSide) + sqr(minSide) -> 0
+        else -> 2
+    }
+    else -1
 }
 
 /**
