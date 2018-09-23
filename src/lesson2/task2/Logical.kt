@@ -53,7 +53,8 @@ fun daysInMonth(month: Int, year: Int): Int = when {
  * Вернуть true, если утверждение верно
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
-                 x2: Double, y2: Double, r2: Double): Boolean = TODO()
+                 x2: Double, y2: Double, r2: Double): Boolean = 
+ sqr(x2 - x1) + sqr(y2 - y1) <= sqr(r2) && r2 - sqrt(sqr(x2 - x1) + sqr(y2 - y1)) >= r1
 
 /**
  * Средняя
@@ -64,4 +65,21 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = TODO()
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    fun medianOf(x: Int, y: Int, z: Int) = if (x > y) when {
+        x < z -> x
+        y > z -> y
+        else -> z
+    }
+    else when {
+        y < z -> y
+        x > z -> x
+        else -> z
+    }
+
+    val x = minOf(a, b, c)
+    val y = min(r, s)
+    val z = medianOf(a, b, c)
+    val d = max(r, s)
+    return x <= y && z <= d
+}
