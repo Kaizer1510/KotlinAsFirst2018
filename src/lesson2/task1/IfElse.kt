@@ -1,11 +1,12 @@
 @file:Suppress("UNUSED_PARAMETER")
-
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.abs
+import lesson1.task1.sqr
 import kotlin.math.max
 import kotlin.math.sqrt
+import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * Пример
@@ -106,17 +107,17 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int = when {
-    kingX == rookX1 && kingX == rookX2 -> 3
-    kingX == rookX1 && kingY == rookY2 -> 3
-    kingY == rookY1 && kingX == rookX2 -> 3
-    kingY == rookY1 && kingY == rookY2 -> 3
-    kingX == rookX1 -> 1
-    kingY == rookY1 -> 1
-    kingY == rookY2 -> 2
-    kingX == rookX2 -> 2
-    else -> 0
+                       rookX2: Int, rookY2: Int): Int {
+    val treadFrom1 = kingX == rookX1 || kingY == rookY1
+    val treadFrom2 = kingX == rookX2 || kingY == rookY2
+    return when {
+        treadFrom1 && treadFrom2 -> 3
+        treadFrom1 -> 1
+        treadFrom2 -> 2
+        else -> 0
+    }
 }
+
 /**
  * Простая
  *
@@ -129,44 +130,46 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int = when {
-    kingX == rookX && abs(kingX - bishopX) == abs(kingY - bishopY) -> 3
-    kingY == rookY && abs(kingX - bishopX) == abs(kingY - bishopY) -> 3
-    abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
-    kingX == rookX -> 1
-    kingY == rookY -> 1
-    else -> 0
+                          bishopX: Int, bishopY: Int): Int {
+    val treadFromRook = kingX == rookX || kingY == rookY
+    val treadFromBishop = abs(kingX - bishopX) == abs(kingY - bishopY)
+    return when {
+        treadFromRook && treadFromBishop -> 3
+        treadFromBishop -> 2
+        treadFromRook -> 1
+        else -> 0
+    }
 }
 
 /**
  * Простая
- *
+ *if (x > y) if (y < z) y else z else if (x > z) x else z
  * Треугольник задан длинами своих сторон a, b, c.
  * Проверить, является ли данный треугольник остроугольным (вернуть 0),
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int {
-    fun medianOf(x: Double, y: Double, z: Double) = if (x > y) when {
-        x < z -> x
-        y > z -> y
-        else -> z
-    }
-    else when {
-        y < z -> y
-        x > z -> x
-        else -> z
-    }
+fun medianOf(x: Double, y: Double, z: Double) = if (x > y) when {
+    x < z -> x
+    y > z -> y
+    else -> z
+}
+else when {
+    y < z -> y
+    x > z -> x
+    else -> z
+}
 
+fun triangleKind(a: Double, b: Double, c: Double): Int {
     val maxSide = maxOf(a, b, c)
     val medianSide = medianOf(a, b, c)
     val minSide = minOf(a, b, c)
-    return if (maxSide < medianSide + minSide) when {
-        maxSide * maxSide == medianSide * medianSide + minSide * minSide -> 1
-        maxSide * maxSide < medianSide * medianSide + minSide * minSide -> 0
+    return when {
+        maxSide >= medianSide + minSide -> -1
+        sqr(maxSide) == sqr(medianSide) + sqr(minSide) -> 1
+        sqr(maxSide) < sqr(medianSide) + sqr(minSide) -> 0
         else -> 2
     }
-    else -1
 }
 
 /**
@@ -177,11 +180,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
-    a < c && b == c || a == d -> 0
-    c in (a + 1)..(b - 1) && b <= d -> b - c
-    c in (a + 1)..(b - 1) && b > d || a == c && b > d -> d - c
-    a in (c + 1)..(d - 1) && b <= d || a == c && b <= d -> b - a
-    a in (c + 1)..(d - 1) && b > d -> d - a
-    else -> -1
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    val fullSegment = max(b, d) - min(a, c)
+    val sumSegments = b - a + d - c
+    return if (sumSegments < fullSegment) -1
+    else sumSegments - fullSegment
 }
