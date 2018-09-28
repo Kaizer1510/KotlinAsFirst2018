@@ -1,11 +1,14 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson2.task2
 
 import lesson1.task1.sqr
+import lesson2.task1.medianOf
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+
 /**
  * Пример
  *
@@ -21,7 +24,7 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean =
-number % 10 + number % 100 / 10 == number % 1000 / 100 + number / 1000
+        number % 10 + number % 100 / 10 == number % 1000 / 100 + number / 1000
 
 /**
  * Простая
@@ -31,7 +34,7 @@ number % 10 + number % 100 / 10 == number % 1000 / 100 + number / 1000
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-x1 == x2 || y1 == y2 || abs(x1 - x2) == abs(y1 - y2)
+        x1 == x2 || y1 == y2 || abs(x1 - x2) == abs(y1 - y2)
 
 
 /**
@@ -55,8 +58,8 @@ fun daysInMonth(month: Int, year: Int): Int = when {
  * Вернуть true, если утверждение верно
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
-                 x2: Double, y2: Double, r2: Double): Boolean = 
- sqr(x2 - x1) + sqr(y2 - y1) <= sqr(r2) && r2 - sqrt(sqr(x2 - x1) + sqr(y2 - y1)) >= r1
+                 x2: Double, y2: Double, r2: Double): Boolean =
+        sqr(x2 - x1) + sqr(y2 - y1) <= sqr(r2) && r2 - sqrt(sqr(x2 - x1) + sqr(y2 - y1)) >= r1
 
 /**
  * Средняя
@@ -68,20 +71,9 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    fun medianOf(x: Int, y: Int, z: Int) = if (x > y) when {
-        x < z -> x
-        y > z -> y
-        else -> z
-    }
-    else when {
-        y < z -> y
-        x > z -> x
-        else -> z
-    }
-
     val x = minOf(a, b, c)
     val y = min(r, s)
-    val z = medianOf(a, b, c)
+    val z = medianOf(a.toDouble(), b.toDouble(), c.toDouble())
     val d = max(r, s)
     return x <= y && z <= d
 }
