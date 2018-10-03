@@ -108,12 +108,12 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    val treadFrom1 = kingX == rookX1 || kingY == rookY1
-    val treadFrom2 = kingX == rookX2 || kingY == rookY2
+    val threatFrom1 = kingX == rookX1 || kingY == rookY1
+    val threatFrom2 = kingX == rookX2 || kingY == rookY2
     return when {
-        treadFrom1 && treadFrom2 -> 3
-        treadFrom1 -> 1
-        treadFrom2 -> 2
+        threatFrom1 && treadFrom2 -> 3
+        threatFrom1 -> 1
+        threatFrom2 -> 2
         else -> 0
     }
 }
@@ -131,12 +131,12 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
-    val treadFromRook = kingX == rookX || kingY == rookY
-    val treadFromBishop = abs(kingX - bishopX) == abs(kingY - bishopY)
+    val threatFromRook = kingX == rookX || kingY == rookY
+    val threatFromBishop = abs(kingX - bishopX) == abs(kingY - bishopY)
     return when {
-        treadFromRook && treadFromBishop -> 3
-        treadFromBishop -> 2
-        treadFromRook -> 1
+        threatFromRook && treadFromBishop -> 3
+        threatFromBishop -> 2
+        threatFromRook -> 1
         else -> 0
     }
 }
