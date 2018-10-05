@@ -134,7 +134,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
     val threatFromRook = kingX == rookX || kingY == rookY
     val threatFromBishop = abs(kingX - bishopX) == abs(kingY - bishopY)
     return when {
-        threatFromRook && treadFromBishop -> 3
+        threatFromRook && threatFromBishop -> 3
         threatFromBishop -> 2
         threatFromRook -> 1
         else -> 0
