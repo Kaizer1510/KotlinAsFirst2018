@@ -2,7 +2,8 @@
 package lesson3.task1
 
 import kotlin.math.sqrt
-
+import kotlin.math.max
+import kotlin.math.min
 /**
  * Пример
  *
