@@ -149,7 +149,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun medianOf(x: Double, y: Double, z: Double) = if (x > y) when {
+fun <T : Comparable<T>> medianOf(x: T, y: T, z: T): T = if (x > y) when {
     x < z -> x
     y > z -> y
     else -> z
