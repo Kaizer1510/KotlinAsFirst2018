@@ -73,7 +73,7 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     val x = minOf(a, b, c)
     val y = min(r, s)
-    val z = medianOf(a.toDouble(), b.toDouble(), c.toDouble())
+    val z = medianOf(a, b, c)
     val d = max(r, s)
     return x <= y && z <= d
 }
