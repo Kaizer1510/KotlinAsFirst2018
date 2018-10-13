@@ -68,11 +68,11 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var i = 1
-    var r = n
+    var count = 1
+    var number = abs(n)
     while (r >= 10) {
-        i += 1
-        r /= 10
+        count++
+        number /= 10
     }
     return i
 }
@@ -138,11 +138,11 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var del = 1
+    var div = 1
     var i = n / 2
     while (i > 1) {
         if (n % i == 0) break
-        del += 2
+        div += 2
         i = n / del
     }
     return i
@@ -174,7 +174,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     var c = 0
-    for (i in m..n) if (sqrt(i.toDouble()) / sqrt(i.toDouble()).toInt() == 1.0) {
+    if (0 in m..n) c = 1
+    else for (i in m..n) if (sqrt(i.toDouble()) / sqrt(i.toDouble()).toInt() == 1.0) {
         c = 1
         break
     }
