@@ -4,6 +4,7 @@ package lesson3.task1
 import kotlin.math.sqrt
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.abs
 /**
  * Пример
  *
@@ -70,11 +71,11 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
     var count = 1
     var number = abs(n)
-    while (r >= 10) {
+    while (number >= 10) {
         count++
         number /= 10
     }
-    return i
+    return count
 }
 
 /**
@@ -124,12 +125,12 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var result = n
-    for (i in 2..n) {
-        result = i
-        if (n % i == 0) break
+    var minDiv = n
+    for (div in 2..n) {
+        minDiv = div
+        if (n % div == 0) break
     }
-    return result
+    return minDiv
 }
 
 /**
@@ -143,7 +144,7 @@ fun maxDivisor(n: Int): Int {
     while (i > 1) {
         if (n % i == 0) break
         div += 2
-        i = n / del
+        i = n / div
     }
     return i
 }
