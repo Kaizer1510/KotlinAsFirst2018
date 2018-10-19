@@ -163,13 +163,15 @@ fun maxDivisor(n: Int): Int {
 fun isCoPrime(m: Int, n: Int): Boolean {
     val k = min(m, n)
     var c = 1
-    if (m % 2 == 0 && n % 2 == 0 || max(m, n) % k == 0) c = 2
-    else
-        for (i in 3..sqrt(k.toDouble()).toInt() step 2)
+    when {
+        k == 1 -> Double.NaN
+        m % 2 == 0 && n % 2 == 0 || max(m, n) % k == 0 -> c = 2
+        else -> for (i in 3..sqrt(k.toDouble()).toInt() step 2)
             if (m % i == 0 && n % i == 0) {
                 c = k
                 break
             }
+    }
     return c == 1
 }
 
