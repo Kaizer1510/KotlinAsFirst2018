@@ -43,7 +43,7 @@ fun isPrime(n: Int): Boolean {
  */
 fun isPerfect(n: Int): Boolean {
     var sum = 1
-    for (m in 2..n/2) {
+    for (m in 2..n / 2) {
         if (n % m > 0) continue
         sum += m
         if (sum > n) break
@@ -88,21 +88,15 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    var a = 2
-    var b = 1
+    var a = 1
+    var b = 0
     var c: Int
-    return when {
-        n < 3 -> 1
-        n == 3 -> 2
-        else -> {
-            for (i in 4..n) {
-                c = a
-                a += b
-                b = c
-            }
-            return a
-        }
+    for (i in 2..n) {
+        c = a
+        a += b
+        b = c
     }
+    return a
 }
 
 /**
@@ -129,11 +123,18 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var minDiv = n
-    for (div in 2..n) {
-        minDiv = div
-        if (n % div == 0) break
+    var k = 1
+    return if (n % 2 == 0) 2
+    else {
+        for (div in 3..sqrt(n.toDouble()).toInt() step 2) {
+            minDiv = div
+            if (n % div == 0) {
+                k = 0
+                break
+            }
+        }
+        if (k == 0) minDiv else n
     }
-    return minDiv
 }
 
 /**
@@ -162,10 +163,13 @@ fun maxDivisor(n: Int): Int {
 fun isCoPrime(m: Int, n: Int): Boolean {
     val k = min(m, n)
     var c = 1
-    for (i in 2..k) if (m % i == 0 && n % i == 0) {
-        c = k
-        break
-    }
+    if (m % 2 == 0 && n % 2 == 0 || max(m, n) % k == 0) c = 2
+    else
+        for (i in 3..sqrt(k.toDouble()).toInt() step 2)
+            if (m % i == 0 && n % i == 0) {
+                c = k
+                break
+            }
     return c == 1
 }
 
@@ -179,10 +183,12 @@ fun isCoPrime(m: Int, n: Int): Boolean {
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     var c = 0
     if (0 in m..n) c = 1
-    else for (i in m..n) if (sqrt(i.toDouble()) / sqrt(i.toDouble()).toInt() == 1.0) {
-        c = 1
-        break
-    }
+    else
+        for (i in m..n)
+            if (i % sqrt(i.toDouble()) == 0.0) {
+                c = 1
+                break
+            }
     return c == 1
 }
 
@@ -290,7 +296,7 @@ fun pow(x: Int, y: Int): Int {
 }
 
 fun revert(n: Int): Int {
-    var num = digitNumber(n)
+    val num = digitNumber(n)
     var c = num - 1
     var r = n
     for (i in 0 until num) {
@@ -310,7 +316,7 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var num = digitNumber(n)
+    val num = digitNumber(n)
     var c = num - 1
     var num1: Int
     var num2: Int
@@ -336,8 +342,8 @@ fun isPalindrome(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var num = digitNumber(n)
-    var num1 = n % 10
+    val num = digitNumber(n)
+    val num1 = n % 10
     var numI: Int
     var k = 0
     for (i in 1 until num) {
