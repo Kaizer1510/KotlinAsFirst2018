@@ -187,7 +187,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
     if (0 in m..n) c = 1
     else
         for (i in m..n)
-            if (i % sqrt(i.toDouble()) == 0.0) {
+            if (sqr(sqrt(i.toDouble()).toInt()) == i) {
                 c = 1
                 break
             }
