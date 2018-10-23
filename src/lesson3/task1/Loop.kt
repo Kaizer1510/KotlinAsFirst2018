@@ -266,15 +266,15 @@ fun cos(x: Double, eps: Double): Double {
     val y = x % (2 * PI)
     var member: Double
     var t = 2
-    var sinX = 1.0
+    var cosX = 1.0
     var c = -1
     do {
         member = c * pow(y, t) / factorial(t)
-        sinX += member
+        cosX += member
         t += 2
         if (c == 1) c -= 2 else c += 2
     } while (abs(member) > eps)
-    return sinX
+    return cosX
 }
 
 /**
