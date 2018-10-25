@@ -105,16 +105,32 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var factor1 = 1
-    var factor2 = 1
-    val d = max(m, n)
-    val c = min(m, n)
-    var a = d
-    var b = c
-    while (a != b) if (b > a) a = d * factor2++ else b = c * factor1++
-    return a
+fun gcd(m: Int, n: Int): Int {
+    val a = max(m, n)
+    val b = min(m, n)
+    var result = 1
+    if (a % b == 0) result = b
+    else for (i in maxDivisor(b) downTo minDivisor(b)) {
+        if (a % i == 0 && b % i == 0) {
+            result = i
+            break
+        }
+    }
+    return result
 }
+
+fun lcm(m: Int, n: Int): Int {
+    var i = 0
+    val k = if (m % 2 == 0 && n % 2 == 0) 2 else 1
+    var a = max(m, n)
+    val b = min(m, n)
+    while (i != k) {
+        i = gcd(a, b)
+        a /= i
+    }
+    return a * b
+}
+
 
 /**
  * Простая
@@ -123,18 +139,12 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var minDiv = n
-    var k = 1
-    return if (n % 2 == 0) 2
-    else {
-        for (div in 3..sqrt(n.toDouble()).toInt() step 2) {
+    for (div in 2..sqrt(n.toDouble()).toInt())
+        if (n % div == 0) {
             minDiv = div
-            if (n % div == 0) {
-                k = 0
-                break
-            }
+            break
         }
-        if (k == 0) minDiv else n
-    }
+    return minDiv
 }
 
 /**
@@ -143,14 +153,15 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var div = 1
-    var i = n / 2
-    while (i > 1) {
-        if (n % i == 0) break
-        div += 2
-        i = n / div
-    }
-    return i
+    var maxDiv = 1
+    if (isPrime(n)) Double.NaN
+    else
+        for (div in n - 1 downTo sqrt(n.toDouble()).toInt())
+            if (n % div == 0) {
+                maxDiv = div
+                break
+            }
+    return maxDiv
 }
 
 /**
@@ -160,20 +171,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    val k = min(m, n)
-    var c = 1
-    when {
-        k == 1 -> Double.NaN
-        m % 2 == 0 && n % 2 == 0 || max(m, n) % k == 0 -> c = 2
-        else -> for (i in 3..sqrt(k.toDouble()).toInt() step 2)
-            if (m % i == 0 && n % i == 0) {
-                c = k
-                break
-            }
-    }
-    return c == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
 
 /**
  * Простая
@@ -183,15 +181,16 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var c = 0
-    if (0 in m..n) c = 1
-    else
+    var c = false
+    return if (0 in m..n) true
+    else {
         for (i in m..n)
             if (sqr(sqrt(i.toDouble()).toInt()) == i) {
-                c = 1
+                c = true
                 break
             }
-    return c == 1
+        c
+    }
 }
 
 /**
@@ -322,17 +321,17 @@ fun isPalindrome(n: Int): Boolean {
     var c = num - 1
     var num1: Int
     var num2: Int
-    var k = 1
+    var k = true
     for (i in 0 until num) {
         num1 = n / pow(10, c) % 10
         num2 = n / pow(10, i) % 10
         if (num1 != num2) {
-            k = 0
+            k = false
             break
         }
         c--
     }
-    return k == 1
+    return k
 }
 
 /**
