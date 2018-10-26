@@ -105,32 +105,16 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun gcd(m: Int, n: Int): Int {
-    val a = max(m, n)
-    val b = min(m, n)
-    var result = 1
-    if (a % b == 0) result = b
-    else for (i in maxDivisor(b) downTo minDivisor(b)) {
-        if (a % i == 0 && b % i == 0) {
-            result = i
-            break
-        }
-    }
-    return result
-}
-
 fun lcm(m: Int, n: Int): Int {
-    var i = 0
-    val k = if (m % 2 == 0 && n % 2 == 0) 2 else 1
-    var a = max(m, n)
-    val b = min(m, n)
-    while (i != k) {
-        i = gcd(a, b)
-        a /= i
-    }
-    return a * b
+    var factor1 = 1
+    var factor2 = 1
+    val d = max(m, n)
+    val c = min(m, n)
+    var a = d
+    var b = c
+    while (a != b) if (b > a) a = d * factor2++ else b = c * factor1++
+    return a
 }
-
 
 /**
  * Простая
@@ -171,6 +155,20 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
+fun gcd(m: Int, n: Int): Int {
+    val a = max(m, n)
+    val b = min(m, n)
+    var result = 1
+    if (a % b == 0) result = b
+    else for (i in maxDivisor(b) downTo minDivisor(b)) {
+        if (a % i == 0 && b % i == 0) {
+            result = i
+            break
+        }
+    }
+    return result
+}
+
 fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
 
 /**
