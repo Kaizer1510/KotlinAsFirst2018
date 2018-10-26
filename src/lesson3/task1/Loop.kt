@@ -227,9 +227,9 @@ fun collatzSteps(x: Int): Int {
 fun pow(x: Double, y: Int): Double {
     var result = x
     return when {
+        y == 0 -> 1.0
         x == 1.0 -> 1.0
         x == 0.0 -> 0.0
-        y == 0 -> 1.0
         else -> {
             for (i in 1 until y) result *= x
             result
@@ -284,9 +284,9 @@ fun cos(x: Double, eps: Double): Double {
 fun pow(x: Int, y: Int): Int {
     var result = x
     return when {
+        y == 0 -> 1
         x == 1 -> 1
         x == 0 -> 0
-        y == 0 -> 1
         else -> {
             for (i in 1 until y) result *= x
             result
