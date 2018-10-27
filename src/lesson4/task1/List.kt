@@ -284,9 +284,7 @@ fun roman(n: Int): String {
     val dN = digitNumber(n)
     var num: Int
 
-    for (i in 1..dN) {
-        decomp.add((n / pow(10, i - 1)) % 10)
-    }
+    for (i in 1..dN) decomp.add((n / pow(10, i - 1)) % 10)
 
     for (i in 0 until decomp.size) {
         result.add("")
