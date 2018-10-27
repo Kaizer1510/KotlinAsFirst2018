@@ -6,7 +6,7 @@ import lesson1.task1.discriminant
 import lesson3.task1.minDivisor
 import lesson3.task1.pow
 import kotlin.math.sqrt
-
+import lesson3.task1.digitNumber
 /**
  * Пример
  *
@@ -223,7 +223,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     val c = mutableListOf<Int>()
     var m = n
-    while (m > base) {
+    while (m >= base) {
         c.add(m % base)
         m /= base
     }
@@ -240,7 +240,8 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String =
-        convert(n, base).map { if (it > 9) 'a' + (it - 10) else it.toChar() }.joinToString(separator = "")
+        convert(n, base).joinToString(separator = "") 
+        { if (it > 9) ('a' + (it - 10)).toString() else it.toString() }
 
 /**
  * Средняя
@@ -254,6 +255,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
     for (i in 0 until digits.size) d += digits[i] * pow(base, digits.size - i - 1)
     return d
 }
+
 /**
  * Сложная
  *
@@ -264,7 +266,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int =
-        decimal(str.toList().map { if (it >= '9') it - 'a' + 10 else it - '0' }, base)
+        decimal(str.toList().map { if (it >= 'a') it - 'a' + 10 else it - '0' }, base)
 
 /**
  * Сложная
@@ -274,7 +276,34 @@ fun decimalFromString(str: String, base: Int): Int =
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+
+    val romanNumOne = listOf("I", "X", "C", "M")
+    val romanNumFive = listOf("V", "L", "D")
+    val result = mutableListOf<String>()
+    val decomp = mutableListOf<Int>()
+    val dN = digitNumber(n)
+    var num: Int
+
+    for (i in 1..dN) decomp.add((n / pow(10, i - 1)) % 10)
+
+    for (i in 0 until decomp.size) {
+        result.add("")
+        num = decomp[i]
+        when (num) {
+            in 1..3 -> for (z in 1..num) result[i] += romanNumOne[i]
+            4 -> result[i] = romanNumOne[i] + romanNumFive[i]
+            9 -> result[i] = romanNumOne[i] + romanNumOne[i + 1]
+            0 -> result[i] = ""
+            else -> {
+                result[i] = romanNumFive[i]
+                for (z in 6..num) result[i] += romanNumOne[i]
+            }
+        }
+    }
+
+    return result.reversed().joinToString(separator = "")
+}
 
 /**
  * Очень сложная
@@ -283,4 +312,51 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val units = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val tens1 = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+            "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
+    val tens = listOf("дцать", "сорок", "десят", "девяносто")
+    val hundreds = listOf("сто", "двести", "ста", "сот")
+    val thousands = listOf("одна тысяча", "две тысячи", "тысячи", "тысяч")
+    val result = mutableListOf<String>()
+    var uni: Int
+    var ten: Int
+    var hun: Int
+
+    for (i in 1000 downTo 1 step 999) {
+        uni = n / i % 10
+        ten = n / (i * 10) % 10
+        hun = n / (i * 100) % 10
+
+        result.add(when (hun) {
+            1 -> hundreds[0]
+            2 -> hundreds[1]
+            in 3..4 -> units[hun] + hundreds[2]
+            in 5..9 -> units[hun] + hundreds[3]
+            else -> ""
+        })
+
+        result.add(when (ten) {
+            in 2..3 -> units[ten] + tens[0]
+            in 5..8 -> units[ten] + tens[2]
+            4 -> tens[1]
+            9 -> tens[3]
+            1 -> tens1[uni]
+            else -> ""
+        })
+
+        result.add(
+                if (ten == 1)
+                    if (i != 1) thousands[3] else ""
+                else when {
+                    i == 1 -> units[uni]
+                    uni in 1..2 -> thousands[uni - 1]
+                    uni in 3..4 -> units[uni] + " " + thousands[2]
+                    uni in 5..9 -> units[uni] + " " + thousands[3]
+                    uni == 0 && ten == 0 && hun == 0 -> ""
+                    else -> thousands[3]
+                })
+    }
+    return result.filter { it != "" }.joinToString(separator = " ")
+}
