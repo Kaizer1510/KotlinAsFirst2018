@@ -311,4 +311,51 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val units = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val tens1 = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+            "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
+    val tens = listOf("дцать", "сорок", "десят", "девяносто")
+    val hundreds = listOf("сто", "двести", "ста", "сот")
+    val thousands = listOf("одна тысяча", "две тысячи", "тысячи", "тысяч")
+    val result = mutableListOf<String>()
+    var uni: Int
+    var ten: Int
+    var hun: Int
+
+    for (i in 1000 downTo 1 step 999) {
+        uni = n / i % 10
+        ten = n / (i * 10) % 10
+        hun = n / (i * 100) % 10
+
+        result.add(when (hun) {
+            1 -> hundreds[0]
+            2 -> hundreds[1]
+            in 3..4 -> units[hun] + hundreds[2]
+            in 5..9 -> units[hun] + hundreds[3]
+            else -> ""
+        })
+
+        result.add(when (ten) {
+            in 2..3 -> units[ten] + tens[0]
+            in 5..8 -> units[ten] + tens[2]
+            4 -> tens[1]
+            9 -> tens[3]
+            1 -> tens1[uni]
+            else -> ""
+        })
+
+        result.add(
+                if (ten == 1)
+                    if (i != 1) thousands[3] else ""
+                else when {
+                    i == 1 -> units[uni]
+                    uni in 1..2 -> thousands[uni - 1]
+                    uni in 3..4 -> units[uni] + " " + thousands[2]
+                    uni in 5..9 -> units[uni] + " " + thousands[3]
+                    uni == 0 && ten == 0 && hun == 0 -> ""
+                    else -> thousands[3]
+                })
+    }
+    return result.filter { it != "" }.joinToString(separator = " ")
+}
