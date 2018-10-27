@@ -240,7 +240,8 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String =
-        convert(n, base).map { if (it > 9) 'a' + (it - 10) else it.toChar() }.joinToString(separator = "")
+        convert(n, base).joinToString(separator = "") 
+        { if (it > 9) ('a' + (it - 10)).toString() else it.toString() }
 
 /**
  * Средняя
