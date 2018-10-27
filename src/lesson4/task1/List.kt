@@ -6,7 +6,7 @@ import lesson1.task1.discriminant
 import lesson3.task1.minDivisor
 import lesson3.task1.pow
 import kotlin.math.sqrt
-
+import lesson3.task1.digitNumber
 /**
  * Пример
  *
@@ -254,6 +254,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
     for (i in 0 until digits.size) d += digits[i] * pow(base, digits.size - i - 1)
     return d
 }
+
 /**
  * Сложная
  *
@@ -274,7 +275,36 @@ fun decimalFromString(str: String, base: Int): Int =
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+
+    val romanNumOne = listOf("I", "X", "C", "M")
+    val romanNumFive = listOf("V", "L", "D")
+    val result = mutableListOf<String>()
+    val decomp = mutableListOf<Int>()
+    val dN = digitNumber(n)
+    var num: Int
+
+    for (i in 1..dN) {
+        decomp.add((n / pow(10, i - 1)) % 10)
+    }
+
+    for (i in 0 until decomp.size) {
+        result.add("")
+        num = decomp[i]
+        when (num) {
+            in 1..3 -> for (z in 1..num) result[i] += romanNumOne[i]
+            4 -> result[i] = romanNumOne[i] + romanNumFive[i]
+            9 -> result[i] = romanNumOne[i] + romanNumOne[i + 1]
+            0 -> result[i] = ""
+            else -> {
+                result[i] = romanNumFive[i]
+                for (z in 6..num) result[i] += romanNumOne[i]
+            }
+        }
+    }
+
+    return result.reversed().joinToString(separator = "")
+}
 
 /**
  * Очень сложная
