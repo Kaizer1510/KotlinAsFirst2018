@@ -265,7 +265,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int =
-        decimal(str.toList().map { if (it >= '9') it - 'a' + 10 else it - '0' }, base)
+        decimal(str.toList().map { if (it >= 'a') it - 'a' + 10 else it - '0' }, base)
 
 /**
  * Сложная
