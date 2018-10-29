@@ -1,4 +1,5 @@
-@file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER", "UNREACHABLE_CODE")
+
 package lesson3.task1
 
 import lesson1.task1.sqr
@@ -105,16 +106,7 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var factor1 = 1
-    var factor2 = 1
-    val d = max(m, n)
-    val c = min(m, n)
-    var a = d
-    var b = c
-    while (a != b) if (b > a) a = d * factor2++ else b = c * factor1++
-    return a
-}
+fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
 
 /**
  * Простая
@@ -136,17 +128,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var maxDiv = 1
-    if (isPrime(n)) Double.NaN
-    else
-        for (div in n - 1 downTo sqrt(n.toDouble()).toInt())
-            if (n % div == 0) {
-                maxDiv = div
-                break
-            }
-    return maxDiv
-}
+fun maxDivisor(n: Int): Int = if (n / minDivisor(n) == n) 1 else n / minDivisor(n)
 
 /**
  * Простая
@@ -156,17 +138,11 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun gcd(m: Int, n: Int): Int {
-    val a = max(m, n)
-    val b = min(m, n)
-    var result = 1
-    if (a % b == 0) result = b
-    else for (i in maxDivisor(b) downTo minDivisor(b)) {
-        if (a % i == 0 && b % i == 0) {
-            result = i
-            break
-        }
-    }
-    return result
+    var a = m
+    var b = n
+    while (a != 0 && b != 0)
+        if (a > b) a %= b else b %= a
+    return a + b
 }
 
 fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
@@ -179,16 +155,12 @@ fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var c = false
-    return if (0 in m..n) true
-    else {
-        for (i in m..n)
-            if (sqr(sqrt(i.toDouble()).toInt()) == i) {
-                c = true
-                break
-            }
-        c
-    }
+    for (i in m..n)
+        if (sqr(sqrt(i.toDouble()).toInt()) == i) {
+            return true
+            break
+        }
+    return false
 }
 
 /**
@@ -319,17 +291,16 @@ fun isPalindrome(n: Int): Boolean {
     var c = num - 1
     var num1: Int
     var num2: Int
-    var k = true
     for (i in 0 until num) {
         num1 = n / pow(10, c) % 10
         num2 = n / pow(10, i) % 10
         if (num1 != num2) {
-            k = false
+            return false
             break
         }
         c--
     }
-    return k
+    return true
 }
 
 /**
@@ -344,15 +315,14 @@ fun hasDifferentDigits(n: Int): Boolean {
     val num = digitNumber(n)
     val num1 = n % 10
     var numI: Int
-    var k = 0
     for (i in 1 until num) {
         numI = n / pow(10, i) % 10
         if (numI != num1) {
-            k = 1
+            return true
             break
         }
     }
-    return k == 1
+    return false
 }
 
 /**

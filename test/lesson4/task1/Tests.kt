@@ -184,7 +184,7 @@ class Tests {
     @Test
     @Tag("Hard")
     fun convertToString() {
-        assertEquals("1", convertToString(1, 2))
+        assertEquals("15nkm", convertToString(483647, 25))
         assertEquals("1210", convertToString(100, 4))
         assertEquals("13c", convertToString(250, 14))
         assertEquals("2ec", convertToString(1000, 19))
@@ -204,7 +204,7 @@ class Tests {
     @Test
     @Tag("Hard")
     fun decimalFromString() {
-        assertEquals(1, decimalFromString("1", 2))
+        assertEquals(2147483647, decimalFromString("4clm98f", 28))
         assertEquals(100, decimalFromString("1210", 4))
         assertEquals(250, decimalFromString("13c", 14))
         assertEquals(1000, decimalFromString("2ec", 19))

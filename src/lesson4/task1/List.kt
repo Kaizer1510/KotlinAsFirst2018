@@ -7,6 +7,7 @@ import lesson3.task1.minDivisor
 import lesson3.task1.pow
 import kotlin.math.sqrt
 import lesson3.task1.digitNumber
+
 /**
  * Пример
  *
@@ -117,11 +118,9 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var result = 0.0
-    for (element in v) result += pow(element, 2)
-    return sqrt(result)
-}
+fun abs(v: List<Double>): Double = sqrt(v.fold(0.0) { pv, el ->
+    pv + pow(el, 2)
+})
 
 /**
  * Простая
@@ -140,7 +139,7 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val m = mean(list)
-    for (i in 0 until list.size) list[i] -= m
+    list.map { it - m }
     return list
 }
 
@@ -240,7 +239,7 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String =
-        convert(n, base).joinToString(separator = "") 
+        convert(n, base).joinToString(separator = "")
         { if (it > 9) ('a' + (it - 10)).toString() else it.toString() }
 
 /**
