@@ -7,6 +7,7 @@ import lesson3.task1.minDivisor
 import lesson3.task1.pow
 import kotlin.math.sqrt
 import lesson3.task1.digitNumber
+import lesson3.task1.isPrime
 
 /**
  * Пример
@@ -193,14 +194,26 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
+fun minDivisorFrom(n: Int, m: Int): Int {
+    var minDiv = n
+    for (div in m..sqrt(n.toDouble()).toInt())
+        if (n % div == 0) {
+            minDiv = div
+            break
+        }
+    return minDiv
+}
+
 fun factorize(n: Int): List<Int> {
     val factors = mutableListOf<Int>()
     var m = n
-    while (minDivisor(m) > 1) {
-        factors.add(minDivisor(m))
-        m /= minDivisor(m)
+    var mD = 2
+    while (mD > 1) {
+        mD = minDivisorFrom(m, mD)
+        factors.add(mD)
+        m /= mD
     }
-    return factors.sorted()
+    return factors.filter { it != 1 }
 }
 
 /**
