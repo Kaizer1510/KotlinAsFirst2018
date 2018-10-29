@@ -359,5 +359,3 @@ fun russian(n: Int): String {
     }
     return result.filter { it != "" }.joinToString(separator = " ")
 }
-/**проверка
- */
