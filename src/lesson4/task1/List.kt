@@ -306,8 +306,11 @@ fun roman(n: Int): String {
             9 -> result[i] = romanNumOne[i] + romanNumOne[i + 1]
             0 -> result[i] = ""
             else -> {
-                result[i] = romanNumFive[i]
-                for (z in 6..num) result[i] += romanNumOne[i]
+                if (i > 2) for (z in 1..num) result[i] += romanNumOne[3]
+                else {
+                    result[i] = romanNumFive[i]
+                    for (z in 6..num) result[i] += romanNumOne[i]
+                }
             }
         }
     }
