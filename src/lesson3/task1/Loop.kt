@@ -5,8 +5,6 @@ package lesson3.task1
 import lesson1.task1.sqr
 import java.lang.Math.PI
 import kotlin.math.sqrt
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.abs
 
 /**
@@ -106,7 +104,7 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
+fun lcm(m: Int, n: Int): Int = m / gcd(m, n) * n
 
 /**
  * Простая
@@ -114,13 +112,10 @@ fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var minDiv = n
     for (div in 2..sqrt(n.toDouble()).toInt())
-        if (n % div == 0) {
-            minDiv = div
-            break
-        }
-    return minDiv
+        if (n % div == 0)
+            return div
+    return n
 }
 
 /**
@@ -128,7 +123,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = if (n / minDivisor(n) == n) 1 else n / minDivisor(n)
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -156,10 +151,8 @@ fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     for (i in m..n)
-        if (sqr(sqrt(i.toDouble()).toInt()) == i) {
+        if (sqr(sqrt(i.toDouble()).toInt()) == i)
             return true
-            break
-        }
     return false
 }
 
@@ -294,10 +287,7 @@ fun isPalindrome(n: Int): Boolean {
     for (i in 0 until num) {
         num1 = n / pow(10, c) % 10
         num2 = n / pow(10, i) % 10
-        if (num1 != num2) {
-            return false
-            break
-        }
+        if (num1 != num2) return false
         c--
     }
     return true
@@ -317,10 +307,7 @@ fun hasDifferentDigits(n: Int): Boolean {
     var numI: Int
     for (i in 1 until num) {
         numI = n / pow(10, i) % 10
-        if (numI != num1) {
-            return true
-            break
-        }
+        if (numI != num1) return true
     }
     return false
 }

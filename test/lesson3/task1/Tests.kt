@@ -70,6 +70,7 @@ class Tests {
         assertEquals(2, digitNumber(99))
         assertEquals(3, digitNumber(123))
         assertEquals(10, digitNumber(Int.MAX_VALUE))
+        assertEquals(10, digitNumber(-1768005302))
     }
 
     @Test
@@ -90,10 +91,10 @@ class Tests {
     @Test
     @Tag("Easy")
     fun lcm() {
-        assertEquals(78, lcm(26, 39))
+        assertEquals(13, lcm(13, 13))
         assertEquals(8, lcm(2, 8))
         assertEquals(24, lcm(6, 8))
-        assertEquals(35954400, lcm(10650, 33760))
+        assertEquals(975, lcm(39, 75))
         assertEquals(13384091, lcm(1357, 9863))
         assertEquals(1339310349, lcm(13579, 98631))
         assertEquals(2089830349, lcm(23579, 88631))
@@ -138,6 +139,7 @@ class Tests {
         assertFalse(isCoPrime(37, 111))
         assertTrue(isCoPrime(1234567890, 908765431))
         assertTrue(isCoPrime(2109876543, 1234567891))
+        assertTrue(isCoPrime(1, 18396))
     }
 
     @Test

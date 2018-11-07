@@ -3,11 +3,9 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import lesson3.task1.minDivisor
 import lesson3.task1.pow
 import kotlin.math.sqrt
 import lesson3.task1.digitNumber
-import lesson3.task1.isPrime
 
 /**
  * Пример
@@ -140,7 +138,7 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val m = mean(list)
-    list.map { it - m }
+    for (i in 0 until list.size) list[i] -= m
     return list
 }
 

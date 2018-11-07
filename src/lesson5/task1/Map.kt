@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import java.util.*
-
 /**
  * Пример
  *
@@ -96,7 +94,17 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    val map = mapA.toMutableMap()
+    mapB.forEach { (name, phone) ->
+        when {
+            phone == map[name] -> Double.NaN
+            name in map -> map[name] = "${map[name]}, $phone"
+            else -> map[name] = phone
+        }
+    }
+    return map
+}
 
 /**
  * Простая
@@ -108,7 +116,14 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val rev = mutableMapOf<Int, List<String>>()
+    for ((name, grade) in grades) {
+        if (grade in rev) rev[grade] = rev[grade]!! + name
+        else rev[grade] = listOf(name)
+    }
+    return rev.mapValues { it.value.sortedDescending() }
+}
 
 /**
  * Простая
@@ -120,7 +135,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a.all { (key, value) -> b[key] == value }
 
 /**
  * Средняя
