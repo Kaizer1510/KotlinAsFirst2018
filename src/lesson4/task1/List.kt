@@ -333,14 +333,16 @@ fun russian(n: Int): String {
     val hundreds = listOf("сто", "двести", "ста", "сот")
     val thousands = listOf("одна тысяча", "две тысячи", "тысячи", "тысяч")
     val result = mutableListOf<String>()
+    val triads = listOf(2, 1)
     var uni: Int
     var ten: Int
     var hun: Int
 
-    for (i in 1000 downTo 1 step 999) {
-        uni = n / i % 10
-        ten = n / (i * 10) % 10
-        hun = n / (i * 100) % 10
+    for (triad in triads) {
+        val z = pow(1000, triad - 1)
+        uni = n / z % 10
+        ten = n / (z * 10) % 10
+        hun = n / (z * 100) % 10
 
         result.add(when (hun) {
             1 -> hundreds[0]
@@ -360,10 +362,10 @@ fun russian(n: Int): String {
         })
 
         result.add(
-                if (ten == 1)
-                    if (i != 1) thousands[3] else ""
-                else when {
-                    i == 1 -> units[uni]
+                when {
+                    ten == 1 && triad == 2 -> thousands[3]
+                    ten == 1 -> ""
+                    triad == 1 -> units[uni]
                     uni in 1..2 -> thousands[uni - 1]
                     uni in 3..4 -> units[uni] + " " + thousands[2]
                     uni in 5..9 -> units[uni] + " " + thousands[3]

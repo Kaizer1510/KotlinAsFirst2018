@@ -118,10 +118,8 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val rev = mutableMapOf<Int, List<String>>()
-    for ((name, grade) in grades) {
-        if (grade in rev) rev[grade] = rev[grade]!! + name
-        else rev[grade] = listOf(name)
-    }
+    for ((name, grade) in grades)
+        rev[grade] = rev.getOrDefault(grade, listOf()) + name
     return rev.mapValues { it.value.sortedDescending() }
 }
 
@@ -147,7 +145,15 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a.all 
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val map = mutableMapOf<String, Pair<Double, Int>>()
+    val result = mutableMapOf<String, Double>()
+    for ((name, cost) in stockPrices)
+        map[name] = Pair(map.getOrDefault(name, Pair(0.0, 0)).first + cost,
+                map.getOrDefault(name, Pair(0.0, 0)).second + 1)
+    for ((name, pair) in map) result[name] = pair.first / pair.second
+    return result
+}
 
 /**
  * Средняя
@@ -164,7 +170,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
+        stuff.filterValues { it.first == kind }.minBy { it.value.second }?.key
 
 /**
  * Сложная
@@ -190,7 +197,19 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val sets = friends.values.toMutableList()
+    val names = friends.keys.toList()
+    val result = mutableMapOf<String, Set<String>>()
+    for (i in 0 until sets.size) {
+        for ((nameM, setM) in friends) {
+            if (nameM in sets[i]) sets[i] = sets[i].union(setM) - names[i]
+        }
+        for (name in sets[i]) if (friends[name] == null) result[name] = setOf()
+        result[names[i]] = sets[i]
+    }
+    return result
+}
 
 /**
  * Простая
@@ -206,14 +225,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = TODO()
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) = a.filterKeys { a[it] != b[it] }
 
 /**
  * Простая
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().filter { it in b }.toList()
 
 /**
  * Средняя
@@ -224,7 +243,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.containsAll(word.toList())
 
 /**
  * Средняя
@@ -238,7 +257,11 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val map = mutableMapOf<String, Int>()
+    for (el in list) map[el] = map.getOrDefault(el, 0) + 1
+    return map.filterValues { it != 1 }
+}
 
 /**
  * Средняя
