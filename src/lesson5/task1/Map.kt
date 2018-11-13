@@ -201,7 +201,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val sets = friends.values.toMutableList()
     val names = friends.keys.toList()
     val result = mutableMapOf<String, Set<String>>()
-    for (i in 0 until sets.size) {
+    for (i in 0 until friends.size) {
         for ((nameM, setM) in friends) {
             if (nameM in sets[i]) sets[i] = sets[i].union(setM) - names[i]
         }
@@ -225,7 +225,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) = a.filterKeys { a[it] != b[it] }
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit =
+        a.forEach { key, value -> if (value == b[key]) a.remove(key) }
 
 /**
  * Простая
@@ -272,7 +273,14 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>): Boolean {
+    for (word in words) {
+        val a = word.toList()
+        for (w in words)
+            if (w != word && canBuildFrom(a, w)) return true
+    }
+    return false
+}
 
 /**
  * Сложная
