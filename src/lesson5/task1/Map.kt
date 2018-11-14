@@ -201,13 +201,20 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val sets = friends.values.toMutableList()
     val names = friends.keys.toList()
     val result = mutableMapOf<String, Set<String>>()
-    for (i in 0 until friends.size) {
-        for ((nameM, setM) in friends) {
-            if (nameM in sets[i]) sets[i] = sets[i].union(setM) - names[i]
+    var c = friends.size
+    var k: Set<String>
+    while (c > 1)
+        for (i in 0 until friends.size) {
+            k = sets[i]
+            for ((nameM, setM) in friends) {
+
+                if (nameM in sets[i]) sets[i] = sets[i].union(setM) - names[i]
+
+            }
+            if (k == sets[i]) c--
+            for (name in sets[i]) if (friends[name] == null) result[name] = setOf()
+            result[names[i]] = sets[i]
         }
-        for (name in sets[i]) if (friends[name] == null) result[name] = setOf()
-        result[names[i]] = sets[i]
-    }
     return result
 }
 
@@ -225,8 +232,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit =
-        a.forEach { key, value -> if (value == b[key]) a.remove(key) }
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMap<String, String> {
+    for ((key, value) in a) if (value == b[key]) a.remove(key)
+    return a
+}
 
 /**
  * Простая
@@ -274,10 +283,11 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    for (word in words) {
-        val a = word.toList()
+    for (i in 1 until words.size) {
+        if (words[i - 1] == words[i]) return true
+        val a = words[i].toList()
         for (w in words)
-            if (w != word && canBuildFrom(a, w)) return true
+            if (w != words[i] && canBuildFrom(a, w)) return true
     }
     return false
 }
