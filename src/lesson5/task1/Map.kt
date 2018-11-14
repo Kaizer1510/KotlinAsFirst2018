@@ -200,17 +200,14 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val sets = friends.values.toMutableList()
     val names = friends.keys.toList()
-    val result = mutableMapOf<String, Set<String>>()
+    val result = mutableMapOf(Pair(names[0], sets[0]))
     var c = friends.size
     var k: Set<String>
     while (c > 1)
         for (i in 0 until friends.size) {
             k = sets[i]
-            for ((nameM, setM) in friends) {
-
+            for ((nameM, setM) in friends)
                 if (nameM in sets[i]) sets[i] = sets[i].union(setM) - names[i]
-
-            }
             if (k == sets[i]) c--
             for (name in sets[i]) if (friends[name] == null) result[name] = setOf()
             result[names[i]] = sets[i]
@@ -232,10 +229,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMap<String, String> {
-    for ((key, value) in a) if (value == b[key]) a.remove(key)
-    return a
-}
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) =
+        a.keys.removeIf { a[it] == b[it] }
 
 /**
  * Простая
@@ -283,11 +278,10 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    for (i in 1 until words.size) {
-        if (words[i - 1] == words[i]) return true
+    for (i in 0..words.size - 2) {
         val a = words[i].toList()
-        for (w in words)
-            if (w != words[i] && canBuildFrom(a, w)) return true
+        for (w in i + 1 until words.size)
+            if (canBuildFrom(a, words[w])) return true
     }
     return false
 }
