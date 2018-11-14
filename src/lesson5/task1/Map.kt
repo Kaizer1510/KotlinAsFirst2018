@@ -200,10 +200,11 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val sets = friends.values.toMutableList()
     val names = friends.keys.toList()
-    val result = mutableMapOf(Pair(names[0], sets[0]))
+    val result = mutableMapOf<String, Set<String>>()
     var c = friends.size
     var k: Set<String>
-    while (c >= 1)
+    if (names.size <= 1) return friends
+    while (c > 1)
         for (i in 0 until friends.size) {
             k = sets[i]
             for ((nameM, setM) in friends)
