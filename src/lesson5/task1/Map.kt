@@ -200,10 +200,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val sets = friends.values.toMutableList()
     val names = friends.keys.toList()
-    val result = mutableMapOf(Pair(names[1], sets[1]))
+    val result = mutableMapOf<String, Set<String>>()
     var c = friends.size
     var k: Set<String>
-    if (names.isEmpty()) return friends
     while (c >= 1)
         for (i in 0 until friends.size) {
             k = sets[i]
@@ -250,7 +249,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().fil
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-        chars.map { it.toLowerCase() }.containsAll(word.toList().map { it.toLowerCase() })
+        chars.sorted().map { it.toLowerCase() }.containsAll(word.toList().sorted().map { it.toLowerCase() })
 
 /**
  * Средняя
