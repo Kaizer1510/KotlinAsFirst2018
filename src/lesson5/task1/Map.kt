@@ -200,15 +200,16 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val sets = friends.values.toMutableList()
     val names = friends.keys.toList()
+    val completed = mutableListOf<Boolean>()
+    for (el in names) completed.add(false)
     val result = mutableMapOf<String, Set<String>>()
-    var c = friends.size
     var k: Set<String>
-    while (c >= 1)
+    while (completed.any { false })
         for (i in 0 until friends.size) {
             k = sets[i]
-            for ((nameM, setM) in friends)
-                if (nameM in sets[i]) sets[i] = sets[i].union(setM) - names[i]
-            if (k == sets[i]) c--
+            for ((name, set) in friends)
+                if (name in sets[i]) sets[i] = sets[i].union(set) - names[i]
+            if (k == sets[i]) completed[i] = true
             for (name in sets[i]) if (friends[name] == null) result[name] = setOf()
             result[names[i]] = sets[i]
         }
@@ -249,7 +250,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().fil
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-        chars.sorted().map { it.toLowerCase() }.containsAll(word.toList().sorted().map { it.toLowerCase() })
+        chars.map { it.toLowerCase() }.sorted().containsAll(word.toList().map { it.toLowerCase() }.sorted())
 
 /**
  * Средняя
@@ -304,7 +305,13 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    var pair = Pair(-1, -1)
+    for (i in 0..list.size - 2)
+        for (g in i + 1 until list.size)
+            if (list[i] + list[g] == number) pair = Pair(i, g)
+    return pair
+}
 
 /**
  * Очень сложная
