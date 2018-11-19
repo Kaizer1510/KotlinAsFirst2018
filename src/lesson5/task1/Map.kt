@@ -249,8 +249,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().fil
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-        chars.map { it.toLowerCase() }.sorted().containsAll(word.toList().map { it.toLowerCase() }.sorted())
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.containsAll(word.toList())
 
 /**
  * Средняя
@@ -280,10 +279,10 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
+    val a = words.map{ it.toLowerCase().toList().sorted() }
     for (i in 0..words.size - 2) {
-        val a = words[i].toList()
         for (w in i + 1 until words.size)
-            if (canBuildFrom(a, words[w])) return true
+            if (a[i] == a[w]) return true
     }
     return false
 }
