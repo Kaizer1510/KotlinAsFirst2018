@@ -133,7 +133,8 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a.all { (key, value) -> b[key] == value }
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
+        a.all { (key, value) -> b[key] == value }
 
 /**
  * Средняя
@@ -201,16 +202,17 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val sets = friends.values.toMutableList()
     val names = friends.keys.toList()
     val completed = mutableListOf<Boolean>()
-    for (el in names) completed.add(false)
     val result = mutableMapOf<String, Set<String>>()
     var k: Set<String>
+    for (el in names) completed.add(false)
+    for (i in 0 until friends.size)
+        for (name in sets[i]) if (friends[name] == null) result[name] = setOf()
     while (completed.any { !it })
         for (i in 0 until friends.size) {
             k = sets[i]
             for ((name, set) in friends)
                 if (name in sets[i]) sets[i] = sets[i].union(set) - names[i]
             if (k == sets[i]) completed[i] = true
-            for (name in sets[i]) if (friends[name] == null) result[name] = setOf()
             result[names[i]] = sets[i]
         }
     return result
@@ -280,12 +282,10 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
+    val map = mutableMapOf<List<Char>, Int>()
     val a = words.map { it.toLowerCase().toList().sorted() }
-    for (i in 0..words.size - 2) {
-        for (w in i + 1 until words.size)
-            if (a[i] == a[w]) return true
-    }
-    return false
+    for (el in a) map[el] = map.getOrDefault(el, 0) + 1
+    return map.any { it.value > 1 }
 }
 
 /**
