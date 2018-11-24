@@ -332,4 +332,30 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val mass = treasures.values.map { it.first }.toMutableList()
+    val price = treasures.values.map { it.second }.toMutableList()
+    val names = treasures.keys.toList()
+    val namesArrayMN = Array(capacity) { Array(treasures.size) { setOf<String>() } }
+    val priceArrayMN = Array(capacity) { Array(treasures.size) { 0 } }
+    for (n in 0 until price.size) if (mass[n] > capacity) {
+        price[n] = 0
+        mass[n] = capacity
+    }
+    for (m in mass[0] until capacity) {
+        priceArrayMN[m][0] = price[0]
+        namesArrayMN[m][0] = setOf(names[0])
+    }
+    for (n in 1 until treasures.size) {
+        for (m in mass[n] - 1 until capacity) {
+            if (priceArrayMN[m][n - 1] < priceArrayMN[m - mass[n] + 1][n - 1] + price[n]) {
+                namesArrayMN[m][n] = namesArrayMN[m - mass[n] + 1][n - 1] + names[n]
+                priceArrayMN[m][n] = priceArrayMN[m - mass[n] + 1][n - 1] + price[n]
+            } else {
+                namesArrayMN[m][n] = namesArrayMN[m][n - 1]
+                priceArrayMN[m][n] = priceArrayMN[m][n - 1]
+            }
+        }
+    }
+    return namesArrayMN.last().last()
+}
