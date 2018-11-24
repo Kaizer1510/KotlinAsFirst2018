@@ -362,7 +362,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val size = treasures.size
     val namesArrayMN = Array(capacity) { Array(size) { setOf<String>() } }
     val priceArrayMN = Array(capacity) { Array(size) { 0 } }
-    val mass = bestOfRepeats(ma, price, capacity)
+    val mass = if (capacity < 3) bestOfRepeats(ma, price, capacity) else ma
 
     for (i in 0 until size)
         if (mass[i] > capacity) {
