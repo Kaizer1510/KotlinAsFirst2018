@@ -352,22 +352,26 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             price[i] = 0
             mass[i] = capacity
         }
-    for (k in mass[0] until capacity) {
+    for (k in mass[0] - 1 until capacity) if (price[0] > 0) {
         priceArrayMN[k][0] = price[0]
         namesArrayMN[k][0] = setOf(names[0])
     }
     for (n in 1 until size) {
+        for (c in 0..mass[n] - 2) {
+            namesArrayMN[c][n] = namesArrayMN[c][n - 1]
+            priceArrayMN[c][n] = priceArrayMN[c][n - 1]
+        }
         for (m in mass[n] - 1 until capacity) {
             if (m - mass[n] < 0) {
-                pri = 0
-                nam = setOf()
+                pri = price[n]
+                nam = setOf(names[n])
             } else {
-                pri = priceArrayMN[m - mass[n]][n - 1]
-                nam = namesArrayMN[m - mass[n]][n - 1]
+                pri = priceArrayMN[m - mass[n]][n - 1] + price[n]
+                nam = namesArrayMN[m - mass[n]][n - 1] + names[n]
             }
-            if (priceArrayMN[m][n - 1] < pri + price[n]) {
-                namesArrayMN[m][n] = nam + names[n]
-                priceArrayMN[m][n] = pri + price[n]
+            if (priceArrayMN[m][n - 1] < pri) {
+                namesArrayMN[m][n] = nam
+                priceArrayMN[m][n] = pri
             } else {
                 namesArrayMN[m][n] = namesArrayMN[m][n - 1]
                 priceArrayMN[m][n] = priceArrayMN[m][n - 1]
