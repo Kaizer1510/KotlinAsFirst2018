@@ -290,7 +290,7 @@ fun <T> extractRepeatsUni(list: List<T>): Map<T, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     val a = words.map { it.toLowerCase().toList().sorted() }
     val map = extractRepeatsUni(a)
-    return map.any { it.value > 1 }
+    return map.isNotEmpty()
 }
 
 /**
@@ -345,23 +345,29 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val size = treasures.size
     val namesArrayMN = Array(capacity) { Array(size) { setOf<String>() } }
     val priceArrayMN = Array(capacity) { Array(size) { 0 } }
-
+    var pri: Int
+    var nam: Set<String>
     for (i in 0 until size)
         if (mass[i] > capacity) {
             price[i] = 0
             mass[i] = capacity
         }
-
     for (k in mass[0] until capacity) {
         priceArrayMN[k][0] = price[0]
         namesArrayMN[k][0] = setOf(names[0])
     }
-
     for (n in 1 until size) {
         for (m in mass[n] - 1 until capacity) {
-            if (priceArrayMN[m][n - 1] < priceArrayMN[m - mass[n] + 1][n - 1] + price[n]) {
-                namesArrayMN[m][n] = namesArrayMN[m - mass[n] + 1][n - 1] + names[n]
-                priceArrayMN[m][n] = priceArrayMN[m - mass[n] + 1][n - 1] + price[n]
+            if (m - mass[n] < 0) {
+                pri = 0
+                nam = setOf()
+            } else {
+                pri = priceArrayMN[m - mass[n]][n - 1]
+                nam = namesArrayMN[m - mass[n]][n - 1]
+            }
+            if (priceArrayMN[m][n - 1] < pri + price[n]) {
+                namesArrayMN[m][n] = nam + names[n]
+                priceArrayMN[m][n] = pri + price[n]
             } else {
                 namesArrayMN[m][n] = namesArrayMN[m][n - 1]
                 priceArrayMN[m][n] = priceArrayMN[m][n - 1]
