@@ -337,35 +337,14 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bestOfRepeats(mass: MutableList<Int>, price: MutableList<Int>, capacity: Int): MutableList<Int> {
-    val repP = extractRepeatsUni(price).keys.sortedDescending()
-    val repM = extractRepeatsUni(mass).keys.sorted()
-    var maxP = 0
-    var minM = Int.MAX_VALUE
-    val massP = mass
-    for (i in 0 until mass.size) {
-        for (r in repM) if (mass[i] > r) massP[i] = 0
-        for (k in repP) if (price[i] < k) price[i] = Int.MAX_VALUE
-    }
-    for (r in 0 until mass.size)
-        if (maxP < price[r]) maxP = price[r]
-    for (r in 0 until mass.size)
-        if (maxP > price[r]) mass[r] = capacity + 1
-    for (r in 0 until mass.size)
-        if (minM > massP[r]) minM = mass[r]
-    for (r in 0 until mass.size)
-        if (minM < massP[r]) mass[r] = capacity + 1
-    return mass
-}
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val ma = treasures.values.map { it.first }.toMutableList()
+    val mass = treasures.values.map { it.first }.toMutableList()
     val price = treasures.values.map { it.second }.toMutableList()
     val names = treasures.keys.toList()
     val size = treasures.size
     val namesArrayMN = Array(capacity) { Array(size) { setOf<String>() } }
     val priceArrayMN = Array(capacity) { Array(size) { 0 } }
-    val mass = if (capacity < 3) bestOfRepeats(ma, price, capacity) else ma
 
     for (i in 0 until size)
         if (mass[i] > capacity) {
