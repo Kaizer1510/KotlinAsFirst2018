@@ -357,5 +357,5 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             }
         }
     }
-    return namesArrayMN.last().last()
+    return namesArrayMN.last().last().sortedDescending().toSet()
 }
