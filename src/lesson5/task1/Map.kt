@@ -272,6 +272,12 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
     return map.filterValues { it != 1 }
 }
 
+fun <T> extractRepeatsUni(list: List<T>): Map<T, Int> {
+    val map = mutableMapOf<T, Int>()
+    for (el in list) map[el] = map.getOrDefault(el, 0) + 1
+    return map.filterValues { it != 1 }
+}
+
 /**
  * Средняя
  *
@@ -282,9 +288,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    val map = mutableMapOf<List<Char>, Int>()
     val a = words.map { it.toLowerCase().toList().sorted() }
-    for (el in a) map[el] = map.getOrDefault(el, 0) + 1
+    val map = extractRepeatsUni(a)
     return map.any { it.value > 1 }
 }
 
@@ -332,21 +337,45 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
+fun bestOfRepeats(mass: MutableList<Int>, price: MutableList<Int>, capacity: Int): MutableList<Int> {
+    val indexPrice = price.mapIndexed { index, i -> i to index }.toMap()
+    val indexMass = mass.mapIndexed { index, i -> i to index }.toMap()
+    val repP = extractRepeatsUni(price).keys
+    val repM = extractRepeatsUni(mass).keys
+    var maxP = 0
+    var minM = Int.MAX_VALUE
+    for (r in repM)
+        if (maxP < price[indexMass[r]!!]) maxP = price[indexMass[r]!!]
+    for (r in repM)
+        if (maxP > price[indexMass[r]!!]) mass[indexMass[r]!!] = capacity + 1
+    for (r in repP)
+        if (minM > mass[indexPrice[r]!!]) minM = mass[indexPrice[r]!!]
+    for (r in repP)
+        if (minM < mass[indexPrice[r]!!]) mass[indexMass[r]!!] = capacity + 1
+    return mass
+}
+
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val mass = treasures.values.map { it.first }.toMutableList()
+    val ma = treasures.values.map { it.first }.toMutableList()
     val price = treasures.values.map { it.second }.toMutableList()
     val names = treasures.keys.toList()
-    val namesArrayMN = Array(capacity) { Array(treasures.size) { setOf<String>() } }
-    val priceArrayMN = Array(capacity) { Array(treasures.size) { 0 } }
-    for (n in 0 until price.size) if (mass[n] > capacity) {
-        price[n] = 0
-        mass[n] = capacity
+    val size = treasures.size
+    val namesArrayMN = Array(capacity) { Array(size) { setOf<String>() } }
+    val priceArrayMN = Array(capacity) { Array(size) { 0 } }
+    val mass = bestOfRepeats(ma, price, capacity)
+
+    for (i in 0 until size)
+        if (mass[i] > capacity) {
+            price[i] = 0
+            mass[i] = capacity
+        }
+
+    for (k in mass[0] until capacity) {
+        priceArrayMN[k][0] = price[0]
+        namesArrayMN[k][0] = setOf(names[0])
     }
-    for (m in mass[0] until capacity) {
-        priceArrayMN[m][0] = price[0]
-        namesArrayMN[m][0] = setOf(names[0])
-    }
-    for (n in 1 until treasures.size) {
+
+    for (n in 1 until size) {
         for (m in mass[n] - 1 until capacity) {
             if (priceArrayMN[m][n - 1] < priceArrayMN[m - mass[n] + 1][n - 1] + price[n]) {
                 namesArrayMN[m][n] = namesArrayMN[m - mass[n] + 1][n - 1] + names[n]
