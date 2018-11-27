@@ -119,7 +119,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val rev = mutableMapOf<Int, List<String>>()
     for ((name, grade) in grades)
-        rev[grade] = rev.getOrDefault(grade, listOf()) + name
+        rev[grade] = rev.getOrDefault(grade, mutableListOf()) + name
     return rev.mapValues { it.value.sortedDescending() }
 }
 
@@ -149,9 +149,10 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val map = mutableMapOf<String, Pair<Double, Int>>()
     val result = mutableMapOf<String, Double>()
-    for ((name, cost) in stockPrices)
-        map[name] = Pair(map.getOrDefault(name, Pair(0.0, 0)).first + cost,
-                map.getOrDefault(name, Pair(0.0, 0)).second + 1)
+    for ((name, cost) in stockPrices) {
+        val pair = map.getOrDefault(name, 0.0 to 0)
+        map[name] = pair.first + cost to pair.second + 1
+    }
     for ((name, pair) in map) result[name] = pair.first / pair.second
     return result
 }
@@ -266,13 +267,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean =
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> {
-    val map = mutableMapOf<String, Int>()
-    for (el in list) map[el] = map.getOrDefault(el, 0) + 1
-    return map.filterValues { it != 1 }
-}
-
-fun <T> extractRepeatsUni(list: List<T>): Map<T, Int> {
+fun <T> extractRepeats(list: List<T>): Map<T, Int> {
     val map = mutableMapOf<T, Int>()
     for (el in list) map[el] = map.getOrDefault(el, 0) + 1
     return map.filterValues { it != 1 }
@@ -289,7 +284,7 @@ fun <T> extractRepeatsUni(list: List<T>): Map<T, Int> {
  */
 fun hasAnagrams(words: List<String>): Boolean {
     val a = words.map { it.toLowerCase().toList().sorted() }
-    val map = extractRepeatsUni(a)
+    val map = extractRepeats(a)
     return map.isNotEmpty()
 }
 
@@ -311,11 +306,12 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    var pair = Pair(-1, -1)
-    for (i in 0..list.size - 2)
-        for (g in i + 1 until list.size)
-            if (list[i] + list[g] == number) pair = Pair(i, g)
-    return pair
+    val map = mutableMapOf<Int, Int>()
+    for (i in 0 until list.size) {
+        if (map[list[i]] != null) return map[list[i]]!! to i
+        map[number - list[i]] = i
+    }
+    return -1 to -1
 }
 
 /**
