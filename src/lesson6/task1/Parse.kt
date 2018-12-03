@@ -88,8 +88,9 @@ fun dateDecomp(string: String, separator: Char): MutableList<Int> {
 }
 
 fun dateStrToDigit(str: String): String = try {
-    val (day, month, year) = dateDecomp(str, ' ')
-    String.format("%02d.%02d.%d", day, month, year)
+    val (day, month, _) = dateDecomp(str, ' ')
+    val year = str.split(" ").last()
+    String.format("%02d.%02d.%s", day, month, year)
 } catch (e: Exception) {
     ""
 }
@@ -105,9 +106,10 @@ fun dateStrToDigit(str: String): String = try {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String = try {
-    val (day, m, year) = dateDecomp(digital, '.')
+    val (day, m, _) = dateDecomp(digital, '.')
     val month = months[m - 1]
-    String.format("%d %s %d", day, month, year)
+    val year = digital.split(".").last()
+    String.format("%d %s %s", day, month, year)
 } catch (e: Exception) {
     ""
 }
