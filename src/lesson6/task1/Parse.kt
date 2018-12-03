@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 /**
  * Пример
  *
@@ -71,7 +73,26 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+val months = listOf("января", "февраля", "марта", "апреля",
+        "мая", "июня", "июля", "августа", "сентября", "октября", "ноября")
+
+fun dateDecomp(string: String, separator: Char): List<Int> {
+    val elements = string.split("$separator").toMutableList()
+    if (elements.size != 3 || string.contains("""\$separator|\-""")
+            || elements[2].startsWith("0")) throw Exception()
+    val m = months.indexOf(elements[1]) + 1
+    if (m != 0) elements[1] = m.toString()
+    val result = elements.map { it.toInt() }
+    if (result[0] > daysInMonth(result[1], result[2])) throw Exception()
+    else return result
+}
+
+fun dateStrToDigit(str: String): String = try {
+    val (day, month, year) = dateDecomp(str, ' ')
+    String.format("%02d.%02d.%d", day, month, year)
+} catch (e: Exception) {
+    ""
+}
 
 /**
  * Средняя
@@ -83,7 +104,13 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String = try {
+    val (day, m, year) = dateDecomp(digital, '.')
+    val month = months[m - 1]
+    String.format("%d %s %d", day, month, year)
+} catch (e: Exception) {
+    ""
+}
 
 /**
  * Средняя
@@ -97,7 +124,20 @@ fun dateDigitToStr(digital: String): String = TODO()
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (Regex("""\(""").findAll(phone).toList().size !=
+            Regex("""\)""").findAll(phone).toList().size ||
+            Regex("""\)""").findAll(phone).toList().size > 1 ||
+            Regex("""\+""").findAll(phone).toList().size > 1 ||
+            phone.contains("""\+""") && !phone.startsWith("""\+""")) return ""
+    val result = Regex("""[()\-\s]""").replace(phone, "")
+    try {
+        result.toDouble()
+    } catch (e: Exception) {
+        return ""
+    }
+    return result
+}
 
 /**
  * Средняя
