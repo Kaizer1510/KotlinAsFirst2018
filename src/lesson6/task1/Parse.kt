@@ -137,9 +137,13 @@ fun flattenPhoneNumber(phone: String): String =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""(^((\d+|-|%)\s+)+(\d+|-|%)$)|^\d+$""")) ||
-            !jumps.contains(Regex("""\d+"""))) return -1
-    return jumps.split(Regex("""[\s%-]+""")).filter { it != "" }.map { it.toInt() }.max()!!
+    if (jumps.contains(Regex("""[^\d\s\-%]"""))) return -1
+    var c = -1
+    val k = Regex("""[^\d\s]""").replace(jumps, "").split(" ")
+    for (i in k) {
+        if (i != "" && i.toInt() > c) c = i.toInt()
+    }
+    return c
 }
 
 /**
@@ -153,10 +157,10 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""(\s?\d+\s[+%-]+)+""")) ||
-            !jumps.contains(Regex("""\d+"""))) return -1
-    val s = Regex("""(\d+\s%*-?\s)|(\d+\s%+-?$)""").replace(jumps, "")
-    return s.split(Regex("""\s%*\+\s?""")).filter { it != "" }.map { it.toInt() }.max()!!
+    if (jumps.contains(Regex("""[^\d\s+%\-]"""))) return -1
+    return Regex("""(\d+\s%*-?\s)|(\d+\s%+-?$)""")
+            .replace(jumps, "").split(Regex("""\s%*\+\s?"""))
+            .filter { it != "" }.map { it.toInt() }.max()!!
 }
 
 /**
