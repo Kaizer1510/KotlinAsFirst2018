@@ -158,9 +158,13 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     if (jumps.contains(Regex("""[^\d\s+%\-]"""))) return -1
-    return Regex("""(\d+\s%*-?\s)|(\d+\s%+-?$)""")
+    var c = -1
+    val k = Regex("""(\d+\s%*-?\s)|(\d+\s%+-?$)""")
             .replace(jumps, "").split(Regex("""\s%*\+\s?"""))
-            .filter { it != "" }.map { it.toInt() }.max()!!
+    for (i in k) {
+        if (i != "" && i.toInt() > c) c = i.toInt()
+    }
+    return c
 }
 
 /**
@@ -172,7 +176,12 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int =
+        if (!expression.matches(Regex("""^(\d+\s[+\-]\s)*\d+$""")))
+            throw IllegalArgumentException()
+else Regex("""(?<=[+\-])\s""").replace(expression, "")
+                .split(Regex("""\s""")).sumBy { it.toInt() }
+
 
 /**
  * Сложная
