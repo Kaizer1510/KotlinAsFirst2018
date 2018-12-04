@@ -74,23 +74,20 @@ fun main(args: Array<String>) {
 val months = listOf("января", "февраля", "марта", "апреля",
         "мая", "июня", "июля", "августа", "сентября", "октября", "ноября")
 
-fun dateDecomp(string: String, separator: Char): MutableList<Int> {
+fun dateDecomp(string: String, separator: Char): List<String> {
     val elements = string.split("$separator").toMutableList()
-    if (elements.size != 3 || string.contains("""\$separator|\-""")
+    if (elements.size != 3 || string.contains("""\-""")
             || elements[2].startsWith("0")) throw Exception()
     val m = months.indexOf(elements[1]) + 1
     if (m != 0) elements[1] = m.toString()
-    val b = (elements[2].toDouble() % 10000).toInt()
-    val result = elements.map { it.toInt() }.toMutableList()
-    result[2] = b
-    if (result[0] > daysInMonth(result[1], result[2])) throw Exception()
-    else return result
+    if (elements[0].toInt() > daysInMonth(elements[1].toInt(),
+                    (elements[2].toDouble() % 10000).toInt())) throw Exception()
+    else return elements
 }
 
 fun dateStrToDigit(str: String): String = try {
-    val (day, month, _) = dateDecomp(str, ' ')
-    val year = str.split(" ").last()
-    String.format("%02d.%02d.%s", day, month, year)
+    val (d, m, y) = dateDecomp(str, ' ')
+    String.format("%02d.%02d.%s", d.toInt(), m.toInt(), y)
 } catch (e: Exception) {
     ""
 }
@@ -106,10 +103,9 @@ fun dateStrToDigit(str: String): String = try {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String = try {
-    val (day, m, _) = dateDecomp(digital, '.')
-    val month = months[m - 1]
-    val year = digital.split(".").last()
-    String.format("%d %s %s", day, month, year)
+    val (day, m, year) = dateDecomp(digital, '.')
+    val month = months[m.toInt() - 1]
+    String.format("%d %s %s", day.toInt(), month, year)
 } catch (e: Exception) {
     ""
 }
@@ -126,20 +122,10 @@ fun dateDigitToStr(digital: String): String = try {
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String {
-    if (Regex("""\(""").findAll(phone).toList().size !=
-            Regex("""\)""").findAll(phone).toList().size ||
-            Regex("""\)""").findAll(phone).toList().size > 1 ||
-            Regex("""\+""").findAll(phone).toList().size > 1 ||
-            phone.contains("""\+""") && !phone.startsWith("""\+""")) return ""
-    val result = Regex("""[()\-\s]""").replace(phone, "")
-    try {
-        result.toDouble()
-    } catch (e: Exception) {
-        return ""
-    }
-    return result
-}
+fun flattenPhoneNumber(phone: String): String =
+        if (phone.matches(Regex("""^(\+\s*-*\s*\d+)?\s*-*\s*(\(\s*-*\s*\d+\s*-*\s*\))?\s*-*\s*(\d+\s*-*\s*)+\d+$""")))
+            Regex("""[()\-\s]""").replace(phone, "")
+        else ""
 
 /**
  * Средняя
