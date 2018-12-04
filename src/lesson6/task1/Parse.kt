@@ -72,22 +72,21 @@ fun main(args: Array<String>) {
  * входными данными.
  */
 val months = listOf("января", "февраля", "марта", "апреля",
-        "мая", "июня", "июля", "августа", "сентября", "октября", "ноября")
+        "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 
-fun dateDecomp(string: String, separator: Char): List<String> {
-    val elements = string.split("$separator").toMutableList()
-    if (elements.size != 3 || string.contains("""\-""")
-            || elements[2].startsWith("0")) throw Exception()
+fun dateDecomp(string: String, separator: Char): List<Int> {
+    if (!string.matches(Regex("""^\d{1,2}((\.\d{2}\.)|(\s[а-я]+\s))[1-9]\d*$"""))) throw Exception()
+    val elements = string.split(separator).toMutableList()
     val m = months.indexOf(elements[1]) + 1
     if (m != 0) elements[1] = m.toString()
-    if (elements[0].toInt() > daysInMonth(elements[1].toInt(),
-                    (elements[2].toDouble() % 10000).toInt())) throw Exception()
-    else return elements
+    val result = elements.map { it.toInt() }
+    if (result[0] > daysInMonth(result[1], result[2])) throw Exception()
+    else return result
 }
 
 fun dateStrToDigit(str: String): String = try {
     val (d, m, y) = dateDecomp(str, ' ')
-    String.format("%02d.%02d.%s", d.toInt(), m.toInt(), y)
+    String.format("%02d.%02d.%d", d, m, y)
 } catch (e: Exception) {
     ""
 }
@@ -104,8 +103,8 @@ fun dateStrToDigit(str: String): String = try {
  */
 fun dateDigitToStr(digital: String): String = try {
     val (day, m, year) = dateDecomp(digital, '.')
-    val month = months[m.toInt() - 1]
-    String.format("%d %s %s", day.toInt(), month, year)
+    val month = months[m - 1]
+    String.format("%d %s %d", day, month, year)
 } catch (e: Exception) {
     ""
 }
@@ -123,7 +122,7 @@ fun dateDigitToStr(digital: String): String = try {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-        if (phone.matches(Regex("""^(\+\s*-*\s*\d+)?\s*-*\s*(\(\s*-*\s*\d+\s*-*\s*\))?\s*-*\s*(\d+\s*-*\s*)+\d+$""")))
+        if (phone.matches(Regex("""^(\+\d+)?[\s-]*(\([\d\s-]+\))?[\s-]*(\d+[\s-]*)+\d*$""")))
             Regex("""[()\-\s]""").replace(phone, "")
         else ""
 
@@ -137,7 +136,11 @@ fun flattenPhoneNumber(phone: String): String =
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    if (!jumps.matches(Regex("""^((\d+|-|%)\s)+(\d+|-|%)$""")) ||
+            !jumps.contains(Regex("""\d+"""))) return -1
+    return jumps.split(Regex("""[\s+%-]+""")).map { it.toInt() }.max()!!
+}
 
 /**
  * Сложная
