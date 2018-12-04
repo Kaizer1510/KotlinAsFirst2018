@@ -75,7 +75,7 @@ val months = listOf("января", "февраля", "марта", "апрел�
         "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 
 fun dateDecomp(string: String, separator: Char): List<Int> {
-    if (!string.matches(Regex("""^\d{1,2}((\.\d{2}\.)|(\s[а-я]+\s))[1-9]\d*$"""))) throw Exception()
+    if (!string.matches(Regex("""^\d{1,2}((\.\d{2}\.)|(\s[а-я]+\s))\d+$"""))) throw Exception()
     val elements = string.split(separator).toMutableList()
     val m = months.indexOf(elements[1]) + 1
     if (m != 0) elements[1] = m.toString()
@@ -137,9 +137,10 @@ fun flattenPhoneNumber(phone: String): String =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""^((\d+|-|%)\s)+(\d+|-|%)$""")) ||
+    if (!jumps.matches(Regex("""^((\d+|-|%)\s+)+(\d+|-|%)$""")) ||
             !jumps.contains(Regex("""\d+"""))) return -1
-    return jumps.split(Regex("""[\s+%-]+""")).map { it.toInt() }.max()!!
+    print(jumps.split(Regex("""[\s%-]+""")))
+    return jumps.split(Regex("""[\s%-]+""")).filter { it != "" }.map { it.toInt() }.max()!!
 }
 
 /**
