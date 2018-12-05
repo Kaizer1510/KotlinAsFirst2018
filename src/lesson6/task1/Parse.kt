@@ -179,7 +179,7 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int =
         if (!expression.matches(Regex("""^(\d+\s[+\-]\s)*\d+$""")))
             throw IllegalArgumentException()
-else Regex("""(?<=[+\-])\s""").replace(expression, "")
+        else Regex("""(?<=[+\-])\s""").replace(expression, "")
                 .split(Regex("""\s""")).sumBy { it.toInt() }
 
 
@@ -192,7 +192,17 @@ else Regex("""(?<=[+\-])\s""").replace(expression, "")
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    if (!str.contains(" ")) return -1
+    val listR = Regex("""(\S+(?=\s))|((?<=\s)\S+)""").findAll(str).toList()
+    val list = str.split(Regex("""\s""")).map { it.toLowerCase() }
+    var k = list[0]
+    for (i in 1 until list.size) {
+        if (k == list[i]) return listR[i - 1].range.first
+        else k = list[i]
+    }
+    return -1
+}
 
 /**
  * Сложная
@@ -205,7 +215,13 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String =
+        if (description.contains(Regex("""[^А-я\s\d;.]"""))) ""
+        else {
+            val price = description.split(Regex("""(;\s)?[А-я]+\s"""))
+                    .filter { it != "" }.map { it.toDouble() }.max()
+            Regex("""[А-я]+(?=\s$price)""").find(description)!!.value
+        }
 
 /**
  * Сложная
