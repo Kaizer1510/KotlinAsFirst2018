@@ -226,7 +226,7 @@ fun mostExpensive(description: String): String {
             c = priceL[i]
         }
     }
-    return Regex("""([^\d\s]|[А-я])+(?=\s$c)""").find(description)!!.value
+    return Regex("""\S+(?=\s$c)""").find(description)!!.value
 }
 
 /**
