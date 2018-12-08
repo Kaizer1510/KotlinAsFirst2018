@@ -196,11 +196,8 @@ fun firstDuplicateIndex(str: String): Int {
     if (!str.contains(" ")) return -1
     val listR = Regex("""(\S+(?=\s))|((?<=\s)\S+)""").findAll(str).toList()
     val list = str.split(Regex("""\s""")).map { it.toLowerCase() }
-    var k = list[0]
-    for (i in 1 until list.size) {
-        if (k == list[i]) return listR[i - 1].range.first
-        else k = list[i]
-    }
+    for (i in 1 until list.size)
+        if (list[i - 1] == list[i]) return listR[i - 1].range.first
     return -1
 }
 
@@ -240,7 +237,22 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int = try {
+    val romanSigns = mapOf('I' to 1, 'V' to 5, 'X' to 10,
+            'L' to 50, 'C' to 100, 'D' to 500, 'M' to 1000)
+    val sign = roman.toList()
+    var sum = 0
+    for (i in 1 until sign.size) {
+        if (romanSigns[sign[i - 1]]!! < romanSigns[sign[i]]!!)
+            sum -= romanSigns[sign[i - 1]]!!
+        else sum += romanSigns[sign[i - 1]]!!
+    }
+    val result = sum + romanSigns[sign.last()]!!
+    if (roman != lesson4.task1.roman(result)) -1
+    else result
+} catch (e: Exception) {
+    -1
+}
 
 /**
  * Очень сложная
@@ -278,4 +290,51 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    if (commands.contains(Regex("""[^\-\s+\[><\]]"""))) throw IllegalArgumentException()
+    val commandList = commands.split("").filter { it != "" }
+    val indexOpen = mutableListOf<Int>()
+    val indexClose = mutableListOf<Int>()
+    for (i in 0 until commandList.size)
+        when {
+            commandList[i] == "[" -> indexOpen += i
+            commandList[i] == "]" -> indexClose += i
+        }
+    val nesting = mutableMapOf<Int, Int>()
+    when {
+        indexOpen.size != indexClose.size -> throw IllegalArgumentException()
+        indexOpen.isEmpty() -> Double.NaN
+        indexOpen.size == 1 && indexClose[0] > indexOpen[0] -> nesting[indexClose[0]] = indexOpen[0]
+        indexClose[0] < indexOpen[0] -> throw IllegalArgumentException()
+        else -> {
+            for (i in 0 until indexClose.size)
+                for (c in 1 until indexOpen.size)
+                    when {
+                        indexClose[i] < indexOpen[c - 1] -> Double.NaN
+                        indexClose[i] < indexOpen[c] -> nesting[indexClose[i]] = indexOpen[c - 1]
+                        !nesting.values.contains(indexOpen[c]) -> nesting[indexClose[i]] = indexOpen[c]
+                    }
+            if (nesting.size != indexOpen.size) throw IllegalArgumentException()
+        }
+    }
+    val invN = nesting.map { it.value to it.key }.toMap()
+    var i = cells / 2
+    var k = 0
+
+    val result = Array(cells) { 0 }
+    for (c in 1..limit) {
+        val q = k
+        when {
+            i == cells || i < 0 -> throw IllegalStateException()
+            commandList[k] == ">" -> i++
+            commandList[k] == "<" -> i--
+            commandList[k] == "+" -> result[i]++
+            commandList[k] == "-" -> result[i]--
+            result[i] == 0 && commandList[k] == "[" -> k = invN[k]!! + 1
+            result[i] != 0 && commandList[k] == "]" -> k = nesting[k]!! + 1
+        }
+        if (k == q) k++
+        if (k > commandList.size - 1) break
+    }
+    return result.toList()
+}
