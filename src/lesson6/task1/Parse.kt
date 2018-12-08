@@ -308,12 +308,21 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         indexClose[0] < indexOpen[0] -> throw IllegalArgumentException()
         else -> {
             for (i in 0 until indexClose.size)
-                for (c in 1 until indexOpen.size)
+                loop@ for (c in indexOpen.size - 1 downTo 1)
                     when {
                         indexClose[i] < indexOpen[c - 1] -> Double.NaN
-                        indexClose[i] < indexOpen[c] -> nesting[indexClose[i]] = indexOpen[c - 1]
-                        !nesting.values.contains(indexOpen[c]) -> nesting[indexClose[i]] = indexOpen[c]
-                        !nesting.values.contains(indexOpen[c - 1]) -> nesting[indexClose[i]] = indexOpen[c - 1]
+                        indexClose[i] < indexOpen[c] &&
+                                !nesting.containsValue(indexOpen[c - 1]) -> {
+                            nesting[indexClose[i]] = indexOpen[c - 1]
+                            break@loop
+                        }
+                        indexClose[i] < indexOpen[c] -> Double.NaN
+                        !nesting.containsValue(indexOpen[c]) &&
+                                !nesting.containsKey(indexClose[i]) -> {
+                            nesting[indexClose[i]] = indexOpen[c]
+                            break@loop
+                        }
+                        c == 1 -> nesting[indexClose[i]] = indexOpen[c - 1]
                     }
             if (nesting.size != indexOpen.size) throw IllegalArgumentException()
         }
