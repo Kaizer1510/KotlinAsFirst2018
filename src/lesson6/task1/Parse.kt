@@ -313,14 +313,15 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                         indexClose[i] < indexOpen[c - 1] -> Double.NaN
                         indexClose[i] < indexOpen[c] -> nesting[indexClose[i]] = indexOpen[c - 1]
                         !nesting.values.contains(indexOpen[c]) -> nesting[indexClose[i]] = indexOpen[c]
+                        !nesting.values.contains(indexOpen[c - 1]) -> nesting[indexClose[i]] = indexOpen[c - 1]
                     }
             if (nesting.size != indexOpen.size) throw IllegalArgumentException()
         }
     }
+
     val invN = nesting.map { it.value to it.key }.toMap()
     var i = cells / 2
     var k = 0
-
     val result = Array(cells) { 0 }
     for (c in 1..limit) {
         val q = k
