@@ -291,6 +291,8 @@ fun fromRoman(roman: String): Int = try {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val result = Array(cells) { 0 }
+    if (commands.isEmpty()) return result.toList()
     if (commands.contains(Regex("""[^\-\s+\[><\]]"""))) throw IllegalArgumentException()
     val commandList = commands.split("").filter { it != "" }
     val indexOpen = mutableListOf<Int>()
@@ -311,14 +313,12 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 loop@ for (c in indexOpen.size - 1 downTo 1)
                     when {
                         indexClose[i] < indexOpen[c - 1] -> Double.NaN
-                        indexClose[i] < indexOpen[c] &&
-                                !nesting.containsValue(indexOpen[c - 1]) -> {
+                        indexClose[i] < indexOpen[c] && !nesting.containsValue(indexOpen[c - 1]) -> {
                             nesting[indexClose[i]] = indexOpen[c - 1]
                             break@loop
                         }
                         indexClose[i] < indexOpen[c] -> Double.NaN
-                        !nesting.containsValue(indexOpen[c]) &&
-                                !nesting.containsKey(indexClose[i]) -> {
+                        !nesting.containsValue(indexOpen[c]) -> {
                             nesting[indexClose[i]] = indexOpen[c]
                             break@loop
                         }
@@ -331,7 +331,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val invN = nesting.map { it.value to it.key }.toMap()
     var i = cells / 2
     var k = 0
-    val result = Array(cells) { 0 }
     for (c in 1..limit) {
         val q = k
         when {
