@@ -333,7 +333,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     for (c in 1..limit) {
         val q = k
         when {
-            i == cells || i < 0 -> throw IllegalStateException()
             commandList[k] == ">" -> i++
             commandList[k] == "<" -> i--
             commandList[k] == "+" -> result[i]++
@@ -345,6 +344,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             }
         }
         if (k == q) k++
+        if (i == cells || i < 0) throw IllegalStateException()
         if (k > commandList.size - 1) break
     }
     return result.toList()
