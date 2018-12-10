@@ -327,7 +327,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             if (nesting.size != indexOpen.size) throw IllegalArgumentException()
         }
     }
-
     val invN = nesting.map { it.value to it.key }.toMap()
     var i = cells / 2
     var k = 0
@@ -340,12 +339,12 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             commandList[k] == "+" -> result[i]++
             commandList[k] == "-" -> result[i]--
             result[i] == 0 && commandList[k] == "[" -> k = invN[k]!! + 1
-            result[i] != 0 && commandList[k] == "]" -> k = nesting[k]!! + 1
+            result[i] != 0 && commandList[k] == "]" -> {
+                k = nesting[k]!! + 1
+                if (k == q) k--
+            }
         }
-        if (k > commandList.size - 1) break
-        if (commandList[k] == "[" && invN[k]!! + 1 == k ||
-                commandList[k] == "]" && k == nesting[k]!! + 1) Double.NaN
-        else if (k == q) k++
+        if (k == q) k++
         if (k > commandList.size - 1) break
     }
     return result.toList()
