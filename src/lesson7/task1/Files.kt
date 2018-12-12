@@ -115,12 +115,15 @@ fun centerFile(inputName: String, outputName: String) {
             Regex("""(?<!.)\s+|\s+(?!.)""").replace(it, "")
         else it
     }.toMutableList()
-    val lengthList = lineList.map { it.length }
-    val maxLength = lengthList.max()!!
-    for (i in 0 until lineList.size) {
-        for (c in 1..(maxLength - lengthList[i]) / 2) lineList[i] = " " + lineList[i]
+    if (lineList.isEmpty()) File(outputName).writeText("")
+    else {
+        val lengthList = lineList.map { it.length }
+        val maxLength = lengthList.max()!!
+        for (i in 0 until lineList.size) {
+            for (c in 1..(maxLength - lengthList[i]) / 2) lineList[i] = " " + lineList[i]
+        }
+        File(outputName).writeText(lineList.joinToString("\n"))
     }
-    File(outputName).writeText(lineList.joinToString("\n"))
 }
 
 /**
