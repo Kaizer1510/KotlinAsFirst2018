@@ -54,7 +54,12 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val text = File(inputName).readText().toLowerCase()
+    val res = mutableMapOf<String, Int>()
+    for (string in substrings) res[string] = Regex(string.toLowerCase()).findAll(text).toList().size
+    return res
+}
 
 
 /**
@@ -71,7 +76,20 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val text = File(inputName).readText()
+    File(outputName).writeText(
+            Regex("""(?<=[ЖЧШЩжчшщ])[ЫЯЮыяю]""").replace(text) {
+                when (it.value) {
+                    "ы" -> "и"
+                    "я" -> "а"
+                    "ю" -> "у"
+                    "Ы" -> "И"
+                    "Я" -> "А"
+                    "Ю" -> "У"
+                    else -> ""
+                }
+            }
+    )
 }
 
 /**
@@ -92,7 +110,17 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val lineList = File(inputName).readLines().map {
+        if (it.isNotEmpty())
+            Regex("""(?<!.)\s+|\s+(?!.)""").replace(it, "")
+        else it
+    }.toMutableList()
+    val lengthList = lineList.map { it.length }
+    val maxLength = lengthList.max()!!
+    for (i in 0 until lineList.size) {
+        for (c in 1..(maxLength - lengthList[i]) / 2) lineList[i] = " " + lineList[i]
+    }
+    File(outputName).writeText(lineList.joinToString("\n"))
 }
 
 /**
