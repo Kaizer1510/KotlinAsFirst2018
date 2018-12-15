@@ -241,7 +241,7 @@ fun top20Words(inputName: String): Map<String, Int> {
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val map = dictionary.map {
         it.key.toUpperCase() to if (it.value.length > 1 && !it.key.toString().matches(Regex("""\w""")))
-            (it.value[0].toUpperCase() + it.value.drop(1))
+            (it.value[0].toUpperCase() + it.value.drop(1).toLowerCase())
         else it.value.toUpperCase()
     }.toMap()
     File(outputName).writeText(File(inputName).readText().map {

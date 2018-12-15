@@ -186,7 +186,7 @@ Basic, Ruby, Swift.
                 mapOf('з' to "zZ", 'р' to "r", 'д' to "d", 'й' to "y", 'М' to "m", 'и' to "YY", '!' to "!!!"),
                 "temp.txt"
         )
-        assertFileContent("temp.txt", "ZZdrавствуy,\nmyyr!!!")
+        assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
     }
 
