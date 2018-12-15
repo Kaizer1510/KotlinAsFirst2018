@@ -294,13 +294,12 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val result = Array(cells) { 0 }
     if (commands.isEmpty()) return result.toList()
     if (commands.contains(Regex("""[^\-\s+\[><\]]"""))) throw IllegalArgumentException()
-    val commandList = commands.split("").filter { it != "" }
     val indexOpen = mutableListOf<Int>()
     val indexClose = mutableListOf<Int>()
-    for (i in 0 until commandList.size)
+    for (i in 0 until commands.length)
         when {
-            commandList[i] == "[" -> indexOpen += i
-            commandList[i] == "]" -> indexClose += i
+            commands[i] == '[' -> indexOpen += i
+            commands[i] == ']' -> indexClose += i
         }
     val nesting = mutableMapOf<Int, Int>()
     when {
@@ -333,19 +332,19 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     for (c in 1..limit) {
         val q = k
         when {
-            commandList[k] == ">" -> i++
-            commandList[k] == "<" -> i--
-            commandList[k] == "+" -> result[i]++
-            commandList[k] == "-" -> result[i]--
-            result[i] == 0 && commandList[k] == "[" -> k = invN[k]!! + 1
-            result[i] != 0 && commandList[k] == "]" -> {
+            commands[k] == '>' -> i++
+            commands[k] == '<' -> i--
+            commands[k] == '+' -> result[i]++
+            commands[k] == '-' -> result[i]--
+            result[i] == 0 && commands[k] == '[' -> k = invN[k]!! + 1
+            result[i] != 0 && commands[k] == ']' -> {
                 k = nesting[k]!! + 1
                 if (k == q) k--
             }
         }
         if (k == q) k++
         if (i == cells || i < 0) throw IllegalStateException()
-        if (k > commandList.size - 1) break
+        if (k > commands.length - 1) break
     }
     return result.toList()
 }
