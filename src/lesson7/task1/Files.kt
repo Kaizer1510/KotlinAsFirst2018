@@ -245,7 +245,8 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         else it.value.toUpperCase()
     }.toMap()
     File(outputName).writeText(File(inputName).readText().map {
-        if (it.isLowerCase()) map.getOrDefault(it.toUpperCase(), it.toString()).toLowerCase()
+        if (it.isLowerCase() && !it.toString().matches(Regex("""\w""")))
+            map.getOrDefault(it.toUpperCase(), it.toString()).toLowerCase()
         else map.getOrDefault(it, it.toString())
     }.joinToString(""))
 }
