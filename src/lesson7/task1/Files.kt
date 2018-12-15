@@ -164,8 +164,8 @@ fun alignFileByWidth(inputName: String, outputName: String) {
             val numOfSpaces = lineList[i].filter { it == ' ' }.length
             if (numOfSpaces > 0) {
                 val wordList = lineList[i].split(" ").toMutableList()
-                var spaces = ""
-                for (c in 1..extraSpaces / numOfSpaces + 1) spaces += " "
+                var spaces = " "
+                for (c in 1..extraSpaces / numOfSpaces) spaces += " "
                 for (c in 1..extraSpaces % numOfSpaces) wordList[c - 1] += " "
                 lineList[i] = wordList.joinToString(spaces)
             }
