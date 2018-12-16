@@ -248,7 +248,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         it.key.toLowerCase() to it.value.toLowerCase()
     }.toMap()
     File(outputName).writeText(File(inputName).readText().map {
-        if (it.isLowerCase() || !it.toString().contains(Regex("""[\wА-я]""")))
+        if (it.isLowerCase() || !it.toString().contains(Regex("""[A-Za-zА-я]""")))
             mapL.getOrDefault(it, it.toString())
         else map.getOrDefault(it, it.toString())
     }.joinToString(""))
