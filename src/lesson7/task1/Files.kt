@@ -56,8 +56,17 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val text = File(inputName).readText().toLowerCase()
+    val lowerSubs = substrings.map { it.toLowerCase() }
     val res = mutableMapOf<String, Int>()
-    for (string in substrings) res[string] = Regex(string.toLowerCase()).findAll(text).toList().size
+    for (c in 0 until lowerSubs.size) {
+        val a = Regex("""^(\w+)\w*\1$""").find(lowerSubs[c])?.value
+        if (a != null) {
+            val s = lowerSubs[c].toMutableList()
+            for (i in 0 until a.length) s.removeAt(i)
+            res[substrings[c]] = Regex("""$a(?=$s)""").findAll(text).toList().size
+        } else
+            res[substrings[c]] = Regex(lowerSubs[c]).findAll(text).toList().size
+    }
     return res
 }
 
