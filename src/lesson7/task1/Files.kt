@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import lesson5.task1.extractRepeats
 import java.io.File
 
 /**
@@ -279,7 +280,13 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val lineList = File(inputName).readLines().map {
+        if (extractRepeats(it.toLowerCase().toList()).isEmpty()) it else ""
+    }
+    val maxLength = lineList.map { it.length }.max()!!
+    File(outputName).writeText(
+            lineList.filter { it != "" && it.length == maxLength }.joinToString(", ")
+    )
 }
 
 /**
@@ -326,7 +333,59 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val openList = mutableListOf(" ")
+    val text = File(inputName).readLines()
+    File(outputName).writeText(text.joinToString("\n", "<html>\n" +
+            "    <body>\n" +
+            "        <p>\n", "\n        </p>\n" +
+            "    </body>\n" +
+            "</html>") {
+        val l = it.toMutableList()
+        val string = mutableListOf<String>()
+        var i = 0
+        if (it.isBlank()) string.add("        </p>\n" + "        <p>")
+        else {
+            while (i < l.size - 1) {
+                when {
+                    l[i] == '*' && l[i + 1] == '*' -> {
+                        if (openList.last() != "**") {
+                            openList.add("**")
+                            string.add("<b>")
+                        } else {
+                            openList.removeAt(openList.size - 1)
+                            string.add("</b>")
+                        }
+                        i++
+                    }
+                    l[i] == '*' ->
+                        if (openList.last() != "*") {
+                            openList.add("*")
+                            string.add("<i>")
+                        } else {
+                            openList.removeAt(openList.size - 1)
+                            string.add("</i>")
+                        }
+                    l[i] == '~' && l[i + 1] == '~' -> {
+                        if (openList.last() != "~~") {
+                            openList.add("~~")
+                            string.add("<s>")
+                        } else {
+                            openList.removeAt(openList.size - 1)
+                            string.add("</s>")
+                        }
+                        i++
+                    }
+                    else -> string.add(l[i].toString())
+                }
+                i++
+                if (i == l.size - 1) if (l[i] == '*') string.add("</i>")
+                else string.add(l[i].toString())
+            }
+            string.add(0, "            ")
+        }
+
+        string.joinToString("")
+    })
 }
 
 /**
