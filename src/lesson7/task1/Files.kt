@@ -59,13 +59,29 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val lowerSubs = substrings.map { it.toLowerCase() }
     val res = mutableMapOf<String, Int>()
     for (c in 0 until lowerSubs.size) {
-        val a = Regex("""^(\w+)\w*\1$""").find(lowerSubs[c])?.value
-        if (a != null) {
-            val s = lowerSubs[c].toMutableList()
-            for (i in 0 until a.length) s.removeAt(i)
-            res[substrings[c]] = Regex("""$a(?=$s)""").findAll(text).toList().size
-        } else
-            res[substrings[c]] = Regex(lowerSubs[c]).findAll(text).toList().size
+        when {
+            lowerSubs[c].matches(Regex(""".+""")) -> {
+                val h = lowerSubs[c].toList().first().toString()
+                val g = lowerSubs[c].removePrefix(h)
+                res[substrings[c]] = Regex("""$h(?=$g)""").findAll(text).toList().size
+            }
+            lowerSubs[c].matches(Regex("""^([\wА-я]+)[\wА-я]*\1$""")) -> {
+                var a = lowerSubs[c].toMutableList()
+                var s = a.subList(1, a.size)
+                a = a.subList(0, a.size)
+                var i = 1
+                while (s != a && a.size > 1) {
+                    a.removeAt(a.size - 1)
+                    s = lowerSubs[c].removeRange(0, i).toMutableList()
+                    println(a)
+                    println(s)
+                    i++
+                }
+                val k = lowerSubs[c].removeRange(0, a.size)
+                res[substrings[c]] = Regex("""$a(?=$k)""").findAll(text).toList().size
+            }
+            else -> res[substrings[c]] = Regex(lowerSubs[c]).findAll(text).toList().size
+        }
     }
     return res
 }
