@@ -153,7 +153,8 @@ class Line private constructor(val b: Double, val angle: Double) {
     fun crossPoint(other: Line): Point {
         val x = (other.b * cos(angle) - b * cos(other.angle)) /
                 sin(angle - other.angle)
-        val y = x * tan(angle) + b / cos(angle)
+        val y = if (abs(cos(angle)) > abs(cos(other.angle))) x * tan(angle) + b / cos(angle)
+        else (x * tan(other.angle) + other.b) / cos(other.angle)
         return Point(x, y)
     }
 
@@ -174,7 +175,11 @@ class Line private constructor(val b: Double, val angle: Double) {
  * Построить прямую по отрезку
  */
 fun lineBySegment(s: Segment): Line {
-    val angle = atan2(abs(s.end.y - s.begin.y), abs(s.end.x - s.end.y))
+    var angle = atan2(s.end.y - s.begin.y, s.end.x - s.begin.x)
+    when {
+        angle >= PI -> angle -= PI
+        angle < 0.0 -> angle += PI
+    }
     return Line(s.begin, angle)
 }
 
@@ -190,7 +195,14 @@ fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
  *
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
-fun bisectorByPoints(a: Point, b: Point): Line = TODO()
+fun bisectorByPoints(a: Point, b: Point): Line {
+    var angle = atan2(abs(b.y - a.y), b.x - a.x) + PI / 2
+    when {
+        angle >= PI -> angle -= PI
+        angle < 0.0 -> angle += PI
+    }
+    return Line(Point((a.x + b.x) / 2,(a.y + b.y) / 2), angle)
+}
 
 /**
  * Средняя
