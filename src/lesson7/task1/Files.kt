@@ -363,57 +363,58 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val openList = mutableListOf(" ")
     val text = File(inputName).readLines()
-    File(outputName).writeText(text.joinToString("\n", "<html>\n" +
-            "    <body>\n" +
-            "        <p>\n", "\n        </p>\n" +
-            "    </body>\n" +
-            "</html>") {
-        val l = it.toMutableList()
-        val string = mutableListOf<String>()
-        var i = 0
-        if (it.isBlank()) string.add("        </p>\n" + "        <p>")
-        else {
-            while (i < l.size - 1) {
-                when {
-                    l[i] == '*' && l[i + 1] == '*' -> {
-                        if (openList.last() != "**") {
-                            openList.add("**")
-                            string.add("<b>")
-                        } else {
-                            openList.removeAt(openList.size - 1)
-                            string.add("</b>")
+    if (text.all { it.isBlank() }) File(outputName).writeText("")
+    else {
+        File(outputName).writeText(text.joinToString("\n",
+                "<html>\n    <body>\n        <p>\n",
+                "\n        </p>\n    </body>\n</html>") {
+            val l = it.toMutableList()
+            val string = mutableListOf<String>()
+            var i = 0
+            if (it.isBlank()) string.add("        </p>\n" + "        <p>")
+            else {
+                while (i < l.size - 1) {
+                    when {
+                        l[i] == '*' && l[i + 1] == '*' -> {
+                            if (openList.last() != "**") {
+                                openList.add("**")
+                                string.add("<b>")
+                            } else {
+                                openList.removeAt(openList.size - 1)
+                                string.add("</b>")
+                            }
+                            i++
                         }
-                        i++
+                        l[i] == '*' ->
+                            if (openList.last() != "*") {
+                                openList.add("*")
+                                string.add("<i>")
+                            } else {
+                                openList.removeAt(openList.size - 1)
+                                string.add("</i>")
+                            }
+                        l[i] == '~' && l[i + 1] == '~' -> {
+                            if (openList.last() != "~~") {
+                                openList.add("~~")
+                                string.add("<s>")
+                            } else {
+                                openList.removeAt(openList.size - 1)
+                                string.add("</s>")
+                            }
+                            i++
+                        }
+                        else -> string.add(l[i].toString())
                     }
-                    l[i] == '*' ->
-                        if (openList.last() != "*") {
-                            openList.add("*")
-                            string.add("<i>")
-                        } else {
-                            openList.removeAt(openList.size - 1)
-                            string.add("</i>")
-                        }
-                    l[i] == '~' && l[i + 1] == '~' -> {
-                        if (openList.last() != "~~") {
-                            openList.add("~~")
-                            string.add("<s>")
-                        } else {
-                            openList.removeAt(openList.size - 1)
-                            string.add("</s>")
-                        }
-                        i++
-                    }
-                    else -> string.add(l[i].toString())
+                    i++
+                    if (i == l.size - 1) if (l[i] == '*') string.add("</i>")
+                    else string.add(l[i].toString())
                 }
-                i++
-                if (i == l.size - 1) if (l[i] == '*') string.add("</i>")
-                else string.add(l[i].toString())
+                string.add(0, "            ")
             }
-            string.add(0, "            ")
-        }
 
-        string.joinToString("")
-    })
+            string.joinToString("")
+        })
+    }
 }
 
 /**
@@ -451,60 +452,60 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
  * Утка по-пекински
- * Утка
- * Соус
+     * Утка
+     * Соус
  * Салат Оливье
-1. Мясо
+    1. Мясо
  * Или колбаса
-2. Майонез
-3. Картофель
-4. Что-то там ещё
+    2. Майонез
+    3. Картофель
+    4. Что-то там ещё
  * Помидоры
  * Фрукты
-1. Бананы
-23. Яблоки
-1. Красные
-2. Зелёные
+    1. Бананы
+    23. Яблоки
+        1. Красные
+        2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-<body>
-<ul>
-<li>
-Утка по-пекински
-<ul>
-<li>Утка</li>
-<li>Соус</li>
-</ul>
-</li>
-<li>
-Салат Оливье
-<ol>
-<li>Мясо
-<ul>
-<li>
-Или колбаса
-</li>
-</ul>
-</li>
-<li>Майонез</li>
-<li>Картофель</li>
-<li>Что-то там ещё</li>
-</ol>
-</li>
-<li>Помидоры</li>
-<li>
-Яблоки
-<ol>
-<li>Красные</li>
-<li>Зелёные</li>
-</ol>
-</li>
-</ul>
-</body>
+  <body>
+    <ul>
+      <li>
+        Утка по-пекински
+          <ul>
+            <li>Утка</li>
+            <li>Соус</li>
+          </ul>
+      </li>
+      <li>
+        Салат Оливье
+        <ol>
+          <li>Мясо
+            <ul>
+              <li>
+                Или колбаса
+              </li>
+            </ul>
+          </li>
+          <li>Майонез</li>
+          <li>Картофель</li>
+          <li>Что-то там ещё</li>
+        </ol>
+      </li>
+      <li>Помидоры</li>
+      <li>
+        Яблоки
+        <ol>
+          <li>Красные</li>
+          <li>Зелёные</li>
+        </ol>
+      </li>
+    </ul>
+  </body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -512,7 +513,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 fun markdownToHtmlLists(inputName: String, outputName: String) {
     TODO()
 }
-
 /**
  * Очень сложная
  *
