@@ -472,40 +472,40 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <ul>
-      <li>
-        Утка по-пекински
-          <ul>
-            <li>Утка</li>
-            <li>Соус</li>
-          </ul>
-      </li>
-      <li>
-        Салат Оливье
-        <ol>
-          <li>Мясо
-            <ul>
-              <li>
-                Или колбаса
-              </li>
-            </ul>
-          </li>
-          <li>Майонез</li>
-          <li>Картофель</li>
-          <li>Что-то там ещё</li>
-        </ol>
-      </li>
-      <li>Помидоры</li>
-      <li>
-        Яблоки
-        <ol>
-          <li>Красные</li>
-          <li>Зелёные</li>
-        </ol>
-      </li>
-    </ul>
-  </body>
+<body>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>
+Или колбаса
+</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>
+Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ul>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -587,12 +587,15 @@ fun m(inputName: String, days: String): Int {
     val monthR: Pair<String, String>
     val daysR: Pair<Int, Int>
     var result = 0
+    val v: Int
     if (r.size != 2 || r[0].size !in 1..2) throw IllegalArgumentException()
     try {
-        if (r[0].size > 1) {
+        if (r[1].size > 1) {
+            v = 1
             monthR = r[0][0] to r[1][0]
             daysR = r[0][1].toInt() to r[1][1].toInt()
         } else {
+            v = 0
             monthR = r[0][0] to r[0][0]
             daysR = r[0][1].toInt() to r[1][0].toInt()
         }
@@ -606,9 +609,21 @@ fun m(inputName: String, days: String): Int {
         val m = numList[0]
         if (!mList.contains(m)) throw IllegalArgumentException()
         try {
-            if (mList.indexOf(m) in mList.indexOf(monthR.first)..mList.indexOf(monthR.second))
-                for (i in daysR.first..daysR.second)
-                    if (numList[i].toInt() > result) result = numList[i].toInt()
+            if (v == 0) {
+                if (mList.indexOf(m) in mList.indexOf(monthR.first)..mList.indexOf(monthR.second))
+                    for (i in daysR.first..daysR.second)
+                        if (numList[i].toInt() > result) result = numList[i].toInt()
+            } else {
+                when {
+                    mList.indexOf(m) == mList.indexOf(monthR.first) -> for (i in daysR.first until numList.size)
+                        if (numList[i].toInt() > result) result = numList[i].toInt()
+                    mList.indexOf(m) == mList.indexOf(monthR.second) -> for (i in 1..daysR.second)
+                        if (numList[i].toInt() > result) result = numList[i].toInt()
+                    mList.indexOf(m) in mList.indexOf(monthR.first) + 1 until mList.indexOf(monthR.second) ->
+                        for (i in 1..numList.size)
+                            if (numList[i].toInt() > result) result = numList[i].toInt()
+                }
+            }
         } catch (e: Exception) {
             throw IllegalArgumentException()
         }
