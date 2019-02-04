@@ -411,11 +411,9 @@ Basic, Ruby, Swift.
     @Tag("Hard")
     fun m() {
         assertEquals(10,
-                m("input/precipitation.txt", ""))
-        assertEquals(10,
-                m("input/precipitation.txt", ""))
-        assertEquals(10,
-                m("input/precipitation.txt", ""))
+                m("input/precipitation.txt", "Январь 4..12"))
+        assertEquals(33,
+                m("input/precipitation.txt", "Январь 1..Февраль 13"))
     }
 
 }
