@@ -452,20 +452,20 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
  * Утка по-пекински
-     * Утка
-     * Соус
+ * Утка
+ * Соус
  * Салат Оливье
-    1. Мясо
+1. Мясо
  * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
+2. Майонез
+3. Картофель
+4. Что-то там ещё
  * Помидоры
  * Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
@@ -513,6 +513,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 fun markdownToHtmlLists(inputName: String, outputName: String) {
     TODO()
 }
+
 /**
  * Очень сложная
  *
@@ -579,3 +580,38 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
 
+fun m(inputName: String, days: String): Int {
+    val mList = listOf("Январь", "Февраль", "Март", "Апрель",
+            "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь")
+    val r = days.split("..").map { it.split(" ") }
+    val monthR: Pair<String, String>
+    val daysR: Pair<Int, Int>
+    var result = 0
+    if (r.size != 2 || r[0].size !in 1..2) throw IllegalArgumentException()
+    try {
+        if (r[0].size > 1) {
+            monthR = r[0][0] to r[1][0]
+            daysR = r[0][1].toInt() to r[1][1].toInt()
+        } else {
+            monthR = r[0][0] to r[0][0]
+            daysR = r[0][1].toInt() to r[1][0].toInt()
+        }
+        if (!mList.containsAll(listOf(monthR.first, monthR.second))) throw Exception()
+    } catch (e: Exception) {
+        throw IllegalArgumentException()
+    }
+    File(inputName).forEachLine { line ->
+        val numList = line.split(" ")
+        if (numList.size < 2) throw IllegalArgumentException()
+        val m = numList[0]
+        if (!mList.contains(m)) throw IllegalArgumentException()
+        try {
+            if (mList.indexOf(m) in mList.indexOf(monthR.first)..mList.indexOf(monthR.second))
+                for (i in daysR.first..daysR.second)
+                    if (numList[i].toInt() > result) result = numList[i].toInt()
+        } catch (e: Exception) {
+            throw IllegalArgumentException()
+        }
+    }
+    return result
+}

@@ -406,4 +406,16 @@ Basic, Ruby, Swift.
 
         File("temp.txt").delete()
     }
+
+    @Test
+    @Tag("Hard")
+    fun m() {
+        assertEquals(10,
+                m("input/precipitation.txt", ""))
+        assertEquals(10,
+                m("input/precipitation.txt", ""))
+        assertEquals(10,
+                m("input/precipitation.txt", ""))
+    }
+
 }
